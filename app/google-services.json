@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "954019776993",
+    "project_id": "cyclosens",
+    "storage_bucket": "cyclosens.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:954019776993:android:7b4d4c2249a82938b5aaa0",
+        "android_client_info": {
+          "package_name": "com.example.cyclosens"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "954019776993-c7jitj9rnevcneoacgk7gmqdsguvtpg3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcJXOpayr8XfTSbWcUWcp_4-G2Js1q748"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "954019776993-c7jitj9rnevcneoacgk7gmqdsguvtpg3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
