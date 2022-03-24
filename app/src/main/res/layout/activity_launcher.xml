@@ -10,129 +10,141 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start An Activity : "
+        android:text="@string/start"
         android:textStyle="bold"
+        android:textSize="20dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/switch1"
+        app:layout_constraintBottom_toTopOf="@id/gpsSwitch"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/gpsSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/switch2"
+        app:layout_constraintBottom_toTopOf="@id/cardiacSwitch"
         android:layout_marginStart="100dp"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textSwitch1"
+        android:id="@+id/textGps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="GPS pairing"
-        app:layout_constraintTop_toTopOf="@id/switch1"
-        app:layout_constraintBottom_toBottomOf="@id/switch1"
-        app:layout_constraintEnd_toStartOf="@id/imageSwitch1"
-        app:layout_constraintStart_toEndOf="@id/switch1" />
+        android:text="@string/gps"
+        app:layout_constraintTop_toTopOf="@id/gpsSwitch"
+        app:layout_constraintBottom_toBottomOf="@id/gpsSwitch"
+        app:layout_constraintStart_toEndOf="@id/gpsSwitch" />
 
 
     <ImageView
-        android:id="@+id/imageSwitch1"
+        android:id="@+id/imageGps"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:src="@drawable/gpsLogo"
-        app:layout_constraintTop_toTopOf="@id/switch1"
-        app:layout_constraintBottom_toBottomOf="@id/switch1"
+        android:src="@drawable/gpslogo"
+        app:layout_constraintBottom_toBottomOf="@id/gpsSwitch"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/textSwitch1" />
+        app:layout_constraintHorizontal_bias="0.8"
+        app:layout_constraintStart_toEndOf="@id/gpsSwitch"
+        app:layout_constraintTop_toTopOf="@id/gpsSwitch"/>
 
     <Switch
-        android:id="@+id/switch2"
+        android:id="@+id/cardiacSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/switch1"
-        app:layout_constraintBottom_toTopOf="@id/switch3"
+        app:layout_constraintTop_toBottomOf="@id/gpsSwitch"
+        app:layout_constraintBottom_toTopOf="@id/pedalSwitch"
         android:layout_marginStart="100dp"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textSwitch2"
+        android:id="@+id/textCardiac"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Cardiac Belt pairing"
-        app:layout_constraintTop_toTopOf="@id/switch2"
-        app:layout_constraintBottom_toBottomOf="@id/switch2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/switch2" />
+        android:text="@string/cardiacBelt"
+        app:layout_constraintTop_toTopOf="@id/cardiacSwitch"
+        app:layout_constraintBottom_toBottomOf="@id/cardiacSwitch"
+        app:layout_constraintStart_toEndOf="@id/cardiacSwitch" />
 
     <ImageView
-        android:id="@+id/imageSwitch2"
+        android:id="@+id/imageCardiac"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:src="@drawable/cardiacBelt"
-        app:layout_constraintTop_toTopOf="@id/switch2"
-        app:layout_constraintBottom_toBottomOf="@id/switch2"
+        android:src="@drawable/cardiacbelt"
+        app:layout_constraintTop_toTopOf="@id/cardiacSwitch"
+        app:layout_constraintBottom_toBottomOf="@id/cardiacSwitch"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/textSwitch2" />
+        app:layout_constraintHorizontal_bias="0.8"
+        app:layout_constraintStart_toEndOf="@id/cardiacSwitch" />
 
     <Switch
-        android:id="@+id/switch3"
+        android:id="@+id/pedalSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/switch2"
-        app:layout_constraintBottom_toTopOf="@id/switch4"
+        app:layout_constraintTop_toBottomOf="@id/cardiacSwitch"
+        app:layout_constraintBottom_toTopOf="@id/ghostSwitch"
         android:layout_marginStart="100dp"
         app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView
-        android:id="@+id/textSwitch3"
+        android:id="@+id/textPedal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pedal pairing"
-        app:layout_constraintTop_toTopOf="@id/switch3"
-        app:layout_constraintBottom_toBottomOf="@id/switch3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/switch3" />
+        android:text="@string/pedal"
+        app:layout_constraintTop_toTopOf="@id/pedalSwitch"
+        app:layout_constraintBottom_toBottomOf="@id/pedalSwitch"
+        app:layout_constraintStart_toEndOf="@id/pedalSwitch" />
 
     <ImageView
-        android:id="@+id/imageSwitch3"
+        android:id="@+id/imagePedal"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:src="@drawable/cardiacBelt"
-        app:layout_constraintTop_toTopOf="@id/switch3"
-        app:layout_constraintBottom_toBottomOf="@id/switch3"
+        android:src="@drawable/cardiacbelt"
+        app:layout_constraintTop_toTopOf="@id/pedalSwitch"
+        app:layout_constraintBottom_toBottomOf="@id/pedalSwitch"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/textSwitch3" />
+        app:layout_constraintHorizontal_bias="0.8"
+        app:layout_constraintStart_toEndOf="@id/pedalSwitch"/>
 
     <Switch
-        android:id="@+id/switch4"
+        android:id="@+id/ghostSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/switch3"
+        app:layout_constraintTop_toBottomOf="@id/pedalSwitch"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginStart="100dp"
         app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView
-        android:id="@+id/textSwitch4"
+        android:id="@+id/textGhost"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Ghost Mode ?"
-        app:layout_constraintTop_toTopOf="@id/switch4"
-        app:layout_constraintBottom_toBottomOf="@id/switch4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/switch4" />
+        android:text="@string/ghost"
+        app:layout_constraintTop_toTopOf="@id/ghostSwitch"
+        app:layout_constraintBottom_toBottomOf="@id/ghostSwitch"
+        app:layout_constraintStart_toEndOf="@id/ghostSwitch" />
 
 
     <ImageView
-        android:id="@+id/imageSwitch4"
+        android:id="@+id/imageGhost"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:src="@drawable/cardiacBelt"
-        app:layout_constraintTop_toTopOf="@id/switch4"
-        app:layout_constraintBottom_toBottomOf="@id/switch4"
+        android:src="@drawable/ghost"
+        app:layout_constraintTop_toTopOf="@id/ghostSwitch"
+        app:layout_constraintBottom_toBottomOf="@id/ghostSwitch"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/textSwitch4" />
+        app:layout_constraintHorizontal_bias="0.8"
+        app:layout_constraintStart_toEndOf="@id/ghostSwitch" />
+
+    <Button
+        android:id="@+id/btnLaunch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/launch"
+        app:layout_constraintTop_toBottomOf="@id/ghostSwitch"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

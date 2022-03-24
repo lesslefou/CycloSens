@@ -1,8 +1,20 @@
 package com.example.cyclosens;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 public class Welcome extends AppCompatActivity {
 
@@ -10,5 +22,78 @@ public class Welcome extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
+
+        Button launchBtn = findViewById(R.id.btnLaunch);
+        launchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent launch = new Intent(Welcome.this, Launcher.class);
+                startActivity(launch);
+            }
+        });
+
+        //Set the first fragment
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+        StartFragment startFragment = new StartFragment();
+        transaction.add(R.id.fragment_place, startFragment);
+        transaction.commit();
+
+    }
+
+    //Display the fragment that the user had selected with the button
+    public void onSelectFragment(View view) {
+        Fragment newFragment = new Fragment();
+
+        switch (view.getId()) {
+            case R.id.btnActivities:
+                newFragment = new ActivitiesFragment();
+                break;
+            case R.id.btnItineraries:
+                newFragment = new ItinerariesFragment();
+                break;
+        }
+
+        getSupportFragmentManager().popBackStack();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_place, newFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menumain,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logout:
+                logout();
+                return true;
+            case R.id.setting:
+                Intent i = new Intent(Welcome.this, Setting.class);
+                startActivity(i);
+                return true;
+            case R.id.aboutUs:
+                Intent i1 = new Intent(Welcome.this, AboutUs.class);
+                startActivity(i1);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void logout() {
+        FirebaseAuth.getInstance().signOut();
+        Intent i = new Intent(getApplicationContext(),MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(i);
     }
 }

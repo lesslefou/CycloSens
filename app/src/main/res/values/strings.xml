@@ -47,5 +47,13 @@
     <string name="aboutUs">About Us</string>
     <string name="aboutUsText">Application created for the IoT Projet of M1 at ISEN Toulon \n \nCreated by Lisa Duterte and Adrien Marcelat during their 2nd semester \n \n Mars-Mai 2022</string>
 
-
+    <string name="start">Start An Activity : </string>
+    <string name="launch">Launch</string>
+    <string name="ghost">Add Ghost Mode ?</string>
+    <string name="pedal">Pedal pairing</string>
+    <string name="cardiacBelt">Cardiac Belt pairing</string>
+    <string name="gps">GPS pairing</string>
+    <string name="toastLauncher">You need to pair all the bluetooth sensors and the gps of you device</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
