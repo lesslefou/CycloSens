@@ -12,19 +12,21 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
+import com.example.cyclosens.activities.ActivitiesFragment;
+import com.example.cyclosens.databinding.ActivityWelcomeBinding;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class Welcome extends AppCompatActivity {
+    private ActivityWelcomeBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_welcome);
+        binding = ActivityWelcomeBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        Button launchBtn = findViewById(R.id.btnLaunch);
-        launchBtn.setOnClickListener(new View.OnClickListener() {
+        binding.btnLaunch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent launch = new Intent(Welcome.this, Launcher.class);
@@ -80,9 +82,13 @@ public class Welcome extends AppCompatActivity {
                 Intent i = new Intent(Welcome.this, Setting.class);
                 startActivity(i);
                 return true;
-            case R.id.aboutUs:
-                Intent i1 = new Intent(Welcome.this, AboutUs.class);
+            case R.id.devices:
+                Intent i1 = new Intent(Welcome.this, Devices.class);
                 startActivity(i1);
+                return true;
+            case R.id.aboutUs:
+                Intent i2 = new Intent(Welcome.this, AboutUs.class);
+                startActivity(i2);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

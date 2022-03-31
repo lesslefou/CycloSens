@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.cyclosens.databinding.ActivitySettingBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class Setting extends AppCompatActivity {
+    private ActivitySettingBinding binding;
 
     DatabaseReference mReference;
     String userId;
@@ -33,15 +35,8 @@ public class Setting extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setting);
-
-
-        nameT = findViewById(R.id.edit_name);
-        surnameT = findViewById(R.id.edit_surname);
-        emailT = findViewById(R.id.edit_email);
-        ageT = findViewById(R.id.edit_age);
-        sizeT = findViewById(R.id.edit_size);
-        weighT = findViewById(R.id.edit_weight);
+        binding = ActivitySettingBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
 
         //Set all the information of the user from the database on the screen
@@ -60,12 +55,12 @@ public class Setting extends AppCompatActivity {
                     String size = dataSnapshot.child("email").getValue().toString();
                     String weigh = dataSnapshot.child("weigh").getValue().toString();
 
-                    nameT.setText(name);
-                    surnameT.setText(surname);
-                    emailT.setText(email);
-                    ageT.setText(age);
-                    sizeT.setText(size);
-                    weighT.setText(weigh);
+                    binding.editName.setText(name);
+                    binding.editSurname.setText(surname);
+                    binding.editEmail.setText(email);
+                    binding.editAge.setText(age);
+                    binding.editSize.setText(size);
+                    binding.editWeight.setText(weigh);
                 }
 
                 @Override
@@ -75,22 +70,10 @@ public class Setting extends AppCompatActivity {
             });
 
             //Go to the previous activity and close this page
-            back = findViewById(R.id.btn_back);
-            back.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                }
-            });
+            binding.btnBack.setOnClickListener(v -> finish());
 
             //Display dialog information
-            unsubscribe = findViewById(R.id.btn_unsubscribe);
-            unsubscribe.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showInformationSavedDialog();
-                }
-            });
+            binding.btnUnsubscribe.setOnClickListener(v -> showInformationSavedDialog());
         }
 
 
@@ -98,25 +81,13 @@ public class Setting extends AppCompatActivity {
 
     protected void showInformationSavedDialog() {
         AlertDialog.Builder builder;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            builder = new AlertDialog.Builder(this,R.style.MyDialogTheme);
-        } else {
-            builder = new AlertDialog.Builder(this);
-        }
+        builder = new AlertDialog.Builder(this,R.style.MyDialogTheme);
         builder.setMessage(R.string.dialogue_message_unsubscribe);
         builder.setCancelable(false);
-        builder.setNegativeButton(R.string.no_answer, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        builder.setPositiveButton(R.string.yes_answer, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                deleteUSer();
-                dialog.cancel();
-            }
+        builder.setNegativeButton(R.string.no_answer, (dialog, which) -> dialog.cancel());
+        builder.setPositiveButton(R.string.yes_answer, (dialog, which) -> {
+            deleteUSer();
+            dialog.cancel();
         });
         AlertDialog alert = builder.create();
         alert.show();

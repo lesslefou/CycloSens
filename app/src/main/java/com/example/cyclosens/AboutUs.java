@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.cyclosens.databinding.ActivityAboutUsBinding;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -15,18 +16,17 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class AboutUs extends FragmentActivity implements OnMapReadyCallback {
-
+    private ActivityAboutUsBinding binding;
     private GoogleMap mMap;
-    private Button back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_about_us);
+        binding = ActivityAboutUsBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         //Go back on the previous page and close this activity
-        back = findViewById(R.id.backBtn);
-        back.setOnClickListener(new View.OnClickListener() {
+        binding.backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
@@ -43,11 +43,8 @@ public class AboutUs extends FragmentActivity implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         //Set the location of Isen Toulon Campus on a map
         mMap = googleMap;
-        LatLng isenToulon = new LatLng(5.939687, 43.120562);
+        LatLng isenToulon = new LatLng(43.120562,5.939687);
         mMap.addMarker(new MarkerOptions().position(isenToulon).title("Isen Toulon"));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(isenToulon, 13f));
-
-
-
     }
 }

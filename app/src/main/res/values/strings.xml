@@ -44,6 +44,8 @@
     <string name="no_answer">No</string>
     <string name="account_deleted">Account Deleted</string>
 
+    <string name="devices">Devices</string>
+
     <string name="aboutUs">About Us</string>
     <string name="aboutUsText">Application created for the IoT Projet of M1 at ISEN Toulon \n \nCreated by Lisa Duterte and Adrien Marcelat during their 2nd semester \n \n Mars-Mai 2022</string>
 
@@ -54,6 +56,9 @@
     <string name="cardiacBelt">Cardiac Belt pairing</string>
     <string name="gps">GPS pairing</string>
     <string name="toastLauncher">You need to pair all the bluetooth sensors and the gps of you device</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="activities">Activities</string>
+    <string name="itineraries">Itineraries</string>
+
+    <string name="onGoing">On Going</string>
+    <string name="title_activity_maps">MapsActivity</string>
 </resources>

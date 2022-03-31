@@ -15,8 +15,7 @@
         app:layout_constraintBottom_toTopOf="@id/btnActivities"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
+        app:layout_constraintVertical_bias="0.0"></LinearLayout>
 
     <TextView
         android:id="@+id/btnItineraries"
@@ -46,14 +45,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
-    <Button
+
+    <ImageButton
         android:id="@+id/btnLaunch"
         android:layout_width="55dp"
         android:layout_height="55dp"
         android:background="@drawable/rond"
-        app:icon="@drawable/start"
+        app:srcCompat="@drawable/start"
         android:onClick="onSelectFragment"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btnItineraries"
-        app:layout_constraintStart_toEndOf="@id/btnActivities" />
+        app:layout_constraintStart_toEndOf="@id/btnActivities"  />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

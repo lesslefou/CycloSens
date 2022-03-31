@@ -1,8 +1,11 @@
 package com.example.cyclosens;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -10,59 +13,60 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.example.cyclosens.databinding.ActivityLauncherBinding;
+
 public class Launcher extends AppCompatActivity {
-    private Switch ghostSwitch, gpsSwitch, cardiacSwitch, pedalSwitch;
+    private ActivityLauncherBinding binding;
     private boolean ghost,gps,cardiac,pedal;
-    private Button btnLaunch;
+
+    private boolean locationPermissionGranted;
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_launcher);
+        binding = ActivityLauncherBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        ghostSwitch = findViewById(R.id.ghostSwitch);
-        gpsSwitch = findViewById(R.id.gpsSwitch);
-        cardiacSwitch = findViewById(R.id.cardiacSwitch);
-        pedalSwitch = findViewById(R.id.pedalSwitch);
-        btnLaunch = findViewById(R.id.btnLaunch);
+        binding.ghostSwitch.setOnCheckedChangeListener((compoundButton, isChecked) -> ghost = isChecked);
+        binding.gpsSwitch.setOnCheckedChangeListener((compoundButton, isChecked) -> gps = isChecked);
+        binding.cardiacSwitch.setOnCheckedChangeListener((compoundButton, isChecked) -> cardiac = isChecked);
+        binding.pedalSwitch.setOnCheckedChangeListener((compoundButton, isChecked) -> pedal = isChecked);
 
-        ghostSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                ghost = isChecked;
-            }
-        });
-        gpsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                gps = isChecked;
-            }
-        });
-        cardiacSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                cardiac = isChecked;
-            }
-        });
-        pedalSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                pedal = isChecked;
-            }
-        });
-
-        btnLaunch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (gps && cardiac && pedal) {
-                    Intent i = new Intent(Launcher.this, Sign_Up.class);
-                    i.putExtra("ghost",true);
-                    startActivity(i);
-                }
-                else {
-                    Toast.makeText(Launcher.this,R.string.toastLauncher, Toast.LENGTH_SHORT);
-                }
+        binding.btnLaunch.setOnClickListener(view -> {
+            if (gps && cardiac && pedal) {
+                getLocationPermission();
+                //CHECK BLUETOOTH
+                checkIfOnGoingPossible();
+            } else {
+                Toast.makeText(Launcher.this,R.string.toastLauncher, Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+    /**
+     * Prompts the user for permission to use the device location.
+     */
+    private void getLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            locationPermissionGranted = true;
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
+    }
+
+    private void checkIfOnGoingPossible() {
+        if (locationPermissionGranted) { //AJOUTER LES CONNECTIONS BLUETOOTH
+            Intent i = new Intent(Launcher.this, OnGoingActivity.class);
+            i.putExtra("ghost",ghost);
+            startActivity(i);
+        } else {
+            Toast.makeText(Launcher.this,"PROBLEME APPARAILLAGE", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }

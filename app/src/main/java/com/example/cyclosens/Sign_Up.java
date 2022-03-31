@@ -17,9 +17,8 @@ import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
-
+import com.example.cyclosens.databinding.ActivitySignUpBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,14 +28,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.ArrayList;
 import java.util.Objects;
 
-public class Sign_Up extends AppCompatActivity implements View.OnClickListener {
+public class Sign_Up extends AppCompatActivity {
+    private ActivitySignUpBinding binding;
 
     EditText editTextEmail, editTextPassword, editTextName, editTextSurname;
-    ProgressBar progressBar;
     User user;
 
     boolean validPassword = false;
@@ -48,36 +45,30 @@ public class Sign_Up extends AppCompatActivity implements View.OnClickListener {
     FirebaseDatabase mDatabase;
     DatabaseReference mReference;
 
-    public static final String NOTIFICATION_CHANNEL_ID = "ShareParty";
-    private NotificationManagerCompat notificationManager;
-
+    public static final String NOTIFICATION_CHANNEL_ID = "CycloSens";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up);
-
-        editTextName =findViewById(R.id.edit_name);
-        editTextSurname =findViewById(R.id.edit_surname);
-        editTextEmail =findViewById(R.id.edit_email);
-        editTextPassword =findViewById(R.id.edit_password);
-        progressBar = findViewById(R.id.progressBar);
+        binding = ActivitySignUpBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance();
         mReference = mDatabase.getReference();
-        progressBar = findViewById(R.id.progressBar);
 
-
-        findViewById(R.id.btn_sign).setOnClickListener(this);
-        findViewById(R.id.btn_back).setOnClickListener(this);
+        binding.btnSign.setOnClickListener(v -> registerUser());
+        binding.btnBack.setOnClickListener(v -> {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+        });
     }
 
     private void registerUser() {
-        final String name = editTextName.getText().toString().trim();
-        final String surname = editTextSurname.getText().toString().trim();
-        final String email = editTextEmail.getText().toString().trim();
-        final String password = editTextPassword.getText().toString().trim();
+        final String name = binding.editName.getText().toString().trim();
+        final String surname = binding.editSurname.getText().toString().trim();
+        final String email = binding.editEmail.getText().toString().trim();
+        final String password = binding.editPassword.getText().toString().trim();
 
         if (name.isEmpty() ){
             editTextName.setError(getString(R.string.notName));
@@ -118,7 +109,7 @@ public class Sign_Up extends AppCompatActivity implements View.OnClickListener {
 
         if (!name.isEmpty() || !surname.isEmpty() || !email.isEmpty() || !password.isEmpty()) {
 
-            progressBar.setVisibility(View.VISIBLE);
+            binding.progressBar.setVisibility(View.VISIBLE);
 
             mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
@@ -150,7 +141,7 @@ public class Sign_Up extends AppCompatActivity implements View.OnClickListener {
                         startActivity(new Intent(Sign_Up.this, Welcome.class));
                     } else {
                         Toast.makeText(Sign_Up.this, R.string.error + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        progressBar.setVisibility(View.GONE);
+                        binding.progressBar.setVisibility(View.GONE);
                     }
                 }
             });
@@ -159,19 +150,6 @@ public class Sign_Up extends AppCompatActivity implements View.OnClickListener {
             Toast.makeText(Sign_Up.this,R.string.notInfo,Toast.LENGTH_LONG).show();
         }
 
-    }
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_sign:
-                registerUser();
-                break;
-
-            case R.id.btn_back:
-                finish();
-                startActivity(new Intent(this, MainActivity.class));
-                break;
-        }
     }
 
 
@@ -194,7 +172,7 @@ public class Sign_Up extends AppCompatActivity implements View.OnClickListener {
             manager.createNotificationChannel(channel);
         }
 
-        notificationManager = NotificationManagerCompat.from(this);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
 
         Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)

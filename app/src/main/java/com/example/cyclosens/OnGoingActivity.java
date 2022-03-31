@@ -1,14 +1,100 @@
 package com.example.cyclosens;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 
-public class OnGoingActivity extends AppCompatActivity {
+import com.example.cyclosens.databinding.ActivityOnGoingBinding;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
+public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCallback {
+    private static final String TAG = OnGoingActivity.class.getSimpleName();
+    private static final String KEY_LOCATION = "location";
+    private ActivityOnGoingBinding binding;
+
+    private boolean ghost;
+    private GoogleMap map;
+    private static final int DEFAULT_ZOOM = 20;
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    private Location lastKnownLocation;
+
+    @SuppressLint("MissingPermission") //PERMISSION CHECKER EN AMONT
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_on_going);
+        binding = ActivityOnGoingBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        ghost = getIntent().getExtras().getBoolean("ghost");
+
+        // Retrieve location and camera position from saved instance state.
+        if (savedInstanceState != null) {
+            lastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
+        }
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
+        binding.stop.setOnClickListener(view -> {
+            //SAVE THE DATA ON THE DATABASE
+
+            finish();
+        });
+        //récupérer la date avec DateFormat FULL
+    }
+
+
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        map = googleMap;
+        updateLocationUI();
+        getDeviceLocation();
+    }
+
+    @SuppressLint("MissingPermission") //PERMISSION CHECKER EN AMONT
+    private void updateLocationUI() {
+        if (map == null) {
+            return;
+        }
+        map.setMyLocationEnabled(true);
+        map.getUiSettings().setMyLocationButtonEnabled(true);
+    }
+
+    /**
+     * Gets the current location of the device, and positions the map's camera.
+     * which may be null in rare cases when a location is not available
+     */
+    @SuppressLint("MissingPermission") //PERMISSION CHECKER EN AMONT
+    private void getDeviceLocation() {
+        Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
+        locationResult.addOnCompleteListener(this, task -> {
+            if (task.isSuccessful()) {
+                // Set the map's camera position to the current location of the device.
+                lastKnownLocation = task.getResult();
+                if (lastKnownLocation != null) {
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                            new LatLng(lastKnownLocation.getLatitude(),
+                                    lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                }
+            } else {
+                Log.d(TAG, "Current location is null. Using defaults.");
+                map.getUiSettings().setMyLocationButtonEnabled(false);
+            }
+        });
     }
 }
