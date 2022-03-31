@@ -8,6 +8,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.cyclosens.activities.Activity;
+import com.example.cyclosens.activities.ActivityInformation;
 import com.example.cyclosens.databinding.ActivityOnGoingBinding;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -20,6 +22,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
 public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final String TAG = OnGoingActivity.class.getSimpleName();
     private static final String KEY_LOCATION = "location";
@@ -27,7 +35,7 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
 
     private boolean ghost;
     private GoogleMap map;
-    private static final int DEFAULT_ZOOM = 20;
+    private static final int DEFAULT_ZOOM = 18;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Location lastKnownLocation;
 
@@ -51,11 +59,16 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
         mapFragment.getMapAsync(this);
 
         binding.stop.setOnClickListener(view -> {
+            Date date = Calendar.getInstance().getTime();
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+            String strDate = dateFormat.format(date);
+            Activity activityOnGoing = new Activity(getString(R.string.activity),strDate); //METTRE PLUTOT LA DUREE QUE L'HEURE
             //SAVE THE DATA ON THE DATABASE
-
+            Intent i = new Intent(OnGoingActivity.this, ActivityInformation.class);
+            i.putExtra("activity",activityOnGoing);
+            startActivity(i);
             finish();
         });
-        //récupérer la date avec DateFormat FULL
     }
 
 

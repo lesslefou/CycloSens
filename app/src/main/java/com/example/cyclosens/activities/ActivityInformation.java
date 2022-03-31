@@ -9,12 +9,18 @@ import com.example.cyclosens.databinding.ActivityInformationBinding;
 
 public class ActivityInformation extends AppCompatActivity {
     private ActivityInformationBinding binding;
+    private Activity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityInformationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        activity = getIntent().getExtras().getParcelable("activity");
+
+        binding.name.setText(activity.getNameActivity());
+        binding.date.setText(activity.getDateActivity());
 
 
     }
