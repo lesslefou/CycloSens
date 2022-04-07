@@ -8,6 +8,7 @@
          location permissions for the "MyLocation" functionality.
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -37,12 +38,6 @@
             android:exported="false" />
         <activity
             android:name=".activities.ActivityInformation"
-            android:exported="false" />
-        <activity
-            android:name=".ItinerariesAdapter"
-            android:exported="false" />
-        <activity
-            android:name=".activitiesAdapter"
             android:exported="false" />
         <activity
             android:name=".Launcher"

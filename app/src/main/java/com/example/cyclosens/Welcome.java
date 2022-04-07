@@ -26,12 +26,9 @@ public class Welcome extends AppCompatActivity {
         binding = ActivityWelcomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        binding.btnLaunch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent launch = new Intent(Welcome.this, Launcher.class);
-                startActivity(launch);
-            }
+        binding.btnLaunch.setOnClickListener(view -> {
+            Intent launch = new Intent(Welcome.this, Launcher.class);
+            startActivity(launch);
         });
 
         //Set the first fragment
@@ -43,7 +40,10 @@ public class Welcome extends AppCompatActivity {
 
     }
 
-    //Display the fragment that the user had selected with the button
+    /**
+     * Display the fragment that the user had selected with the button
+     * @param view
+     */
     public void onSelectFragment(View view) {
         Fragment newFragment = new Fragment();
 
@@ -61,7 +61,6 @@ public class Welcome extends AppCompatActivity {
         transaction.replace(R.id.fragment_place, newFragment);
         transaction.addToBackStack(null);
         transaction.commit();
-
     }
 
 
@@ -72,6 +71,11 @@ public class Welcome extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Redirects the user to the good activity
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
@@ -95,6 +99,9 @@ public class Welcome extends AppCompatActivity {
         }
     }
 
+    /**
+     * Allows the disconnection of the user on the application
+     */
     public void logout() {
         FirebaseAuth.getInstance().signOut();
         Intent i = new Intent(getApplicationContext(),MainActivity.class);

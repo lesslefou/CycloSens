@@ -18,6 +18,8 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.cyclosens.classes.User;
 import com.example.cyclosens.databinding.ActivitySignUpBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -32,9 +34,9 @@ import java.util.Objects;
 
 public class Sign_Up extends AppCompatActivity {
     private ActivitySignUpBinding binding;
+    private static final String TAG = Sign_Up.class.getSimpleName(); //POUR LES LOG
 
     EditText editTextEmail, editTextPassword, editTextName, editTextSurname;
-    User user;
 
     boolean validPassword = false;
     boolean hasNumbers = false;
@@ -42,6 +44,7 @@ public class Sign_Up extends AppCompatActivity {
     boolean hasUpperCase = false;
 
     FirebaseAuth mAuth;
+    User user;
     FirebaseDatabase mDatabase;
     DatabaseReference mReference;
 
@@ -70,6 +73,7 @@ public class Sign_Up extends AppCompatActivity {
         final String email = binding.editEmail.getText().toString().trim();
         final String password = binding.editPassword.getText().toString().trim();
 
+        /*Check if the user filled in all the fields*/
         if (name.isEmpty() ){
             editTextName.setError(getString(R.string.notName));
             editTextName.requestFocus();
@@ -84,6 +88,7 @@ public class Sign_Up extends AppCompatActivity {
             editTextEmail.requestFocus();
         }
 
+        /*Check if the user respects the password constraints*/
         validPassword = false;
         hasNumbers = false;
         hasLowerCase = false;
@@ -107,6 +112,7 @@ public class Sign_Up extends AppCompatActivity {
         }
 
 
+        //RAJOUTER validPassword ??
         if (!name.isEmpty() || !surname.isEmpty() || !email.isEmpty() || !password.isEmpty()) {
 
             binding.progressBar.setVisibility(View.VISIBLE);
@@ -115,8 +121,8 @@ public class Sign_Up extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
-
                         FirebaseUser fuser = mAuth.getCurrentUser();
+                        /*Send a verification mail to be sure the email of the user is his own*/
                         Objects.requireNonNull(fuser).sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
@@ -125,10 +131,11 @@ public class Sign_Up extends AppCompatActivity {
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Log.d("Sign_Up", "onFailure: Email not sent" + e.getMessage());
+                                Log.d(TAG, "onFailure: Email not sent" + e.getMessage());
                             }
                         });
 
+                        /*Creation of the user database*/
                         String userId = mAuth.getCurrentUser().getUid();
                         mReference = FirebaseDatabase.getInstance().getReference("user").child(userId);
                         user = new User();

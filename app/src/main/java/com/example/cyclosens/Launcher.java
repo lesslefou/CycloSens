@@ -64,6 +64,7 @@ public class Launcher extends AppCompatActivity {
             Intent i = new Intent(Launcher.this, OnGoingActivity.class);
             i.putExtra("ghost",ghost);
             startActivity(i);
+            finish();
         } else {
             Toast.makeText(Launcher.this,"PROBLEME APPARAILLAGE", Toast.LENGTH_SHORT).show();
         }

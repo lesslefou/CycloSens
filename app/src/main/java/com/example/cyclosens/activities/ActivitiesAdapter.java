@@ -1,6 +1,5 @@
 package com.example.cyclosens.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,10 +10,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cyclosens.R;
+import com.example.cyclosens.classes.Activity;
 
 import java.util.ArrayList;
 
-public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.ViewHolder> {
+public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.ViewHolder>{
+    private static final String TAG = ActivitiesAdapter.class.getSimpleName(); //POUR LES LOG
     private ArrayList<Activity> activities;
     private int itemResource;
 

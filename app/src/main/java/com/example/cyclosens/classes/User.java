@@ -1,4 +1,4 @@
-package com.example.cyclosens;
+package com.example.cyclosens.classes;
 
 import java.util.ArrayList;
 

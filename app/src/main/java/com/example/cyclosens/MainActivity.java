@@ -8,9 +8,8 @@ import android.view.View;
 import com.example.cyclosens.databinding.ActivityMainBinding;
 
 public class MainActivity extends Activity  {
-
+    private static final String TAG = MainActivity.class.getSimpleName(); //POUR LES LOG
     private ActivityMainBinding binding;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +19,6 @@ public class MainActivity extends Activity  {
 
         View view = binding.getRoot();
         setContentView(view);
-
 
         binding.btnSign.setOnClickListener(view1 -> {
             Intent sign = new Intent(MainActivity.this, Sign_Up.class);

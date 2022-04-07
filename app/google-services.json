@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "954019776993",
+    "firebase_url": "https://cyclosens-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "cyclosens",
     "storage_bucket": "cyclosens.appspot.com"
   },
