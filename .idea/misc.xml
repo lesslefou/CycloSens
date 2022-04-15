@@ -6,15 +6,19 @@
         <entry key="..\:/Users/lisad/AndroidStudioProjects/CycloSens/app/src/main/res/drawable/rond.xml" value="0.2388888888888889" />
         <entry key="..\:/Users/lisad/AndroidStudioProjects/CycloSens/app/src/main/res/layout/activity_about_us.xml" value="0.24479166666666666" />
         <entry key="..\:/Users/lisad/AndroidStudioProjects/CycloSens/app/src/main/res/layout/activity_activities_adapter.xml" value="0.25" />
+        <entry key="..\:/Users/lisad/AndroidStudioProjects/CycloSens/app/src/main/res/layout/activity_ble_research.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/lisad/AndroidStudioProjects/CycloSens/app/src/main/res/layout/activity_ble_research_adapter.xml" value="0.2598958333333333" />
+        <entry key="..\:/Users/lisad/AndroidStudioProjects/CycloSens/app/src/main/res/layout/activity_device_information.xml" value="0.30416666666666664" />
+        <entry key="..\:/Users/lisad/AndroidStudioProjects/CycloSens/app/src/main/res/layout/activity_devices.xml" value="0.30416666666666664" />
         <entry key="..\:/Users/lisad/AndroidStudioProjects/CycloSens/app/src/main/res/layout/activity_information.xml" value="0.2760416666666667" />
         <entry key="..\:/Users/lisad/AndroidStudioProjects/CycloSens/app/src/main/res/layout/activity_itineraries_adapter.xml" value="0.278125" />
         <entry key="..\:/Users/lisad/AndroidStudioProjects/CycloSens/app/src/main/res/layout/activity_launcher.xml" value="0.33" />
-        <entry key="..\:/Users/lisad/AndroidStudioProjects/CycloSens/app/src/main/res/layout/activity_log_in.xml" value="0.28541666666666665" />
+        <entry key="..\:/Users/lisad/AndroidStudioProjects/CycloSens/app/src/main/res/layout/activity_log_in.xml" value="0.2" />
         <entry key="..\:/Users/lisad/AndroidStudioProjects/CycloSens/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/Users/lisad/AndroidStudioProjects/CycloSens/app/src/main/res/layout/activity_on_going.xml" value="0.23314606741573032" />
         <entry key="..\:/Users/lisad/AndroidStudioProjects/CycloSens/app/src/main/res/layout/activity_reset_password.xml" value="0.28541666666666665" />
         <entry key="..\:/Users/lisad/AndroidStudioProjects/CycloSens/app/src/main/res/layout/activity_setting.xml" value="0.24479166666666666" />
-        <entry key="..\:/Users/lisad/AndroidStudioProjects/CycloSens/app/src/main/res/layout/activity_sign_up.xml" value="0.28541666666666665" />
+        <entry key="..\:/Users/lisad/AndroidStudioProjects/CycloSens/app/src/main/res/layout/activity_sign_up.xml" value="0.11965811965811966" />
         <entry key="..\:/Users/lisad/AndroidStudioProjects/CycloSens/app/src/main/res/layout/activity_welcome.xml" value="0.33" />
         <entry key="..\:/Users/lisad/AndroidStudioProjects/CycloSens/app/src/main/res/layout/fragment_activities.xml" value="0.1" />
         <entry key="..\:/Users/lisad/AndroidStudioProjects/CycloSens/app/src/main/res/layout/fragment_itineraries.xml" value="0.25" />

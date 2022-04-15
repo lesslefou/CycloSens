@@ -36,8 +36,6 @@ public class Sign_Up extends AppCompatActivity {
     private ActivitySignUpBinding binding;
     private static final String TAG = Sign_Up.class.getSimpleName(); //POUR LES LOG
 
-    EditText editTextEmail, editTextPassword, editTextName, editTextSurname;
-
     boolean validPassword = false;
     boolean hasNumbers = false;
     boolean hasLowerCase = false;
@@ -75,17 +73,23 @@ public class Sign_Up extends AppCompatActivity {
 
         /*Check if the user filled in all the fields*/
         if (name.isEmpty() ){
-            editTextName.setError(getString(R.string.notName));
-            editTextName.requestFocus();
+            binding.editName.setError(getString(R.string.notName));
+            binding.editName.requestFocus();
         }
         if (surname.isEmpty() ){
-            editTextSurname.setError(getString(R.string.notSurname));
-            editTextSurname.requestFocus();
+            binding.editSurname.setError(getString(R.string.notSurname));
+            binding.editSurname.requestFocus();
         }
 
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            editTextEmail.setError(getString(R.string.wrongEmail));
-            editTextEmail.requestFocus();
+        if (email.isEmpty()) {
+            binding.editEmail.setError(getString(R.string.notSurname));
+            binding.editEmail.requestFocus();
+        }
+        else {
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                binding.editEmail.setError(getString(R.string.wrongEmail));
+                binding.editEmail.requestFocus();
+            }
         }
 
         /*Check if the user respects the password constraints*/
@@ -107,12 +111,11 @@ public class Sign_Up extends AppCompatActivity {
         }
 
         if (!validPassword) {
-            editTextPassword.setError((getString(R.string.wrongPassword)));
-            editTextPassword.requestFocus();
+            binding.editPassword.setError((getString(R.string.wrongPassword)));
+            binding.editPassword.requestFocus();
         }
 
 
-        //RAJOUTER validPassword ??
         if (!name.isEmpty() || !surname.isEmpty() || !email.isEmpty() || !password.isEmpty()) {
 
             binding.progressBar.setVisibility(View.VISIBLE);
@@ -137,7 +140,7 @@ public class Sign_Up extends AppCompatActivity {
 
                         /*Creation of the user database*/
                         String userId = mAuth.getCurrentUser().getUid();
-                        mReference = FirebaseDatabase.getInstance().getReference("user").child(userId);
+                        mReference = FirebaseDatabase.getInstance().getReference("user").child(userId).child("Details");
                         user = new User();
                         user.setName(name);
                         user.setSurname(surname);
@@ -145,7 +148,8 @@ public class Sign_Up extends AppCompatActivity {
 
                         mReference.setValue(user);
                         notificationDialog();
-                        startActivity(new Intent(Sign_Up.this, Welcome.class));
+                        logout();
+                        startActivity(new Intent(Sign_Up.this, MainActivity.class));
                     } else {
                         Toast.makeText(Sign_Up.this, R.string.error + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         binding.progressBar.setVisibility(View.GONE);
@@ -159,6 +163,17 @@ public class Sign_Up extends AppCompatActivity {
 
     }
 
+
+    /**
+     * Allows the disconnection of the user on the application
+     */
+    public void logout() {
+        FirebaseAuth.getInstance().signOut();
+        Intent i = new Intent(getApplicationContext(),MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(i);
+    }
 
     private void notificationDialog() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

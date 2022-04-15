@@ -11,6 +11,7 @@
     <string name="password">Password</string>
     <string name="resetPassword">Forgot your password ?</string>
     <string name="back">Back</string>
+    <string name="emailConfirmation">You need to confirm your email before log in</string>
 
     <string name="resetPage">Reset Password</string>
     <string name="resetbyEmail">Send My New Password</string>
@@ -68,4 +69,15 @@
     <string name="changeName">Enter the name of the activity</string>
     <string name="validate">Validate</string>
     <string name="annulation">Annulation</string>
+
+    <string name="device">Devices</string>
+    <string name="cardiacDevice">Cardiac Device</string>
+    <string name="pedalDevice">Pedal Device</string>
+    <string name="addCardiacDevice">Add Cardiac Device</string>
+    <string name="addPedalDevice">Add Pedal Device</string>
+    <string name="status">Status</string>
+    <string name="batterie">Battery</string>
+    <string name="delete">Delete Device</string>
+
+    <string name="deviceUnknown">Device Unknown</string>
 </resources>

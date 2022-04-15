@@ -1,20 +1,22 @@
 package com.example.cyclosens;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.cyclosens.databinding.ActivityLauncherBinding;
+import com.google.firebase.database.core.Constants;
 
+@RequiresApi(api = Build.VERSION_CODES.M)
 public class Launcher extends AppCompatActivity {
     private ActivityLauncherBinding binding;
     private boolean ghost,gps,cardiac,pedal;
@@ -60,7 +62,8 @@ public class Launcher extends AppCompatActivity {
     }
 
     private void checkIfOnGoingPossible() {
-        if (locationPermissionGranted) { //AJOUTER LES CONNECTIONS BLUETOOTH
+        if (locationPermissionGranted && checkIfBleSupported()) {
+
             Intent i = new Intent(Launcher.this, OnGoingActivity.class);
             i.putExtra("ghost",ghost);
             startActivity(i);
@@ -68,6 +71,25 @@ public class Launcher extends AppCompatActivity {
         } else {
             Toast.makeText(Launcher.this,"PROBLEME APPARAILLAGE", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /**
+     * Check if the phone support the ble
+      * @return
+     */
+    private boolean checkIfBleSupported() {
+        BluetoothManager bluetoothManager = getSystemService(BluetoothManager.class);
+        BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
+
+        if (bluetoothAdapter != null) {
+            if (!bluetoothAdapter.isEnabled()) {
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBtIntent, 1);
+                return true;
+            }
+            return true;
+        }
+        return false;
     }
 
 }
