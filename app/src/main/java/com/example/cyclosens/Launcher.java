@@ -30,14 +30,16 @@ import com.google.firebase.database.core.Constants;
 
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class Launcher extends AppCompatActivity {
+    private static final String TAG = Launcher.class.getSimpleName(); //POUR LES LOG
     private ActivityLauncherBinding binding;
     private boolean ghost,gps,cardiac,pedal;
     private String cardiacAddress, pedalAddress;
     private BluetoothDevice cardiacDevice, pedalDevice;
     private boolean beltFound, pedalFound;
-    private BluetoothAdapter bluetoothAdapter;
+    private BluetoothAdapter bluetoothAdapter = null;
     private boolean locationPermissionGranted;
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 2;
+    private static final int REQUEST_CODE_ENABLE_BLUETOOTH = 1;
 
 
     @Override
@@ -60,7 +62,6 @@ public class Launcher extends AppCompatActivity {
             binding.btnLaunch.setOnClickListener(view -> {
                 if (gps && cardiac && pedal) {
                     getLocationPermission();
-                    bluetoothAdapter.getBluetoothLeScanner().startScan(mScanCallback);
                     checkIfOnGoingPossible();
                 } else {
                     Toast.makeText(Launcher.this,R.string.toastLauncher, Toast.LENGTH_SHORT).show();
@@ -84,15 +85,19 @@ public class Launcher extends AppCompatActivity {
     }
 
     private void checkIfOnGoingPossible() {
-        if (locationPermissionGranted && checkIfBleSupported() && beltFound ) {
+        if (locationPermissionGranted && askBluetoothPermission() ) {
             if (beltFound /* && pedalFound*/ ) {
-                bluetoothAdapter.getBluetoothLeScanner().stopScan(mScanCallback);
-                Intent i = new Intent(Launcher.this, OnGoingActivity.class);
-                i.putExtra("ghost",ghost);
-                i.putExtra("cardiac", cardiacDevice);
-                //i.putExtra("pedal", pedalDevice);
-                startActivity(i);
-                finish();
+                if (bluetoothAdapter.isEnabled()) {
+                    bluetoothAdapter.getBluetoothLeScanner().stopScan(mScanCallback);
+                    Intent i = new Intent(Launcher.this, OnGoingActivity.class);
+                    i.putExtra("ghost",ghost);
+                    i.putExtra("cardiac", cardiacDevice);
+                    //i.putExtra("pedal", pedalDevice);
+                    startActivity(i);
+                    finish();
+                }else {
+                    Log.i(TAG, "bluetoothAdapter not enabled");
+                }
             }
             else {
                 Toast.makeText(Launcher.this,"One or more sensors not found", Toast.LENGTH_SHORT).show();
@@ -103,28 +108,42 @@ public class Launcher extends AppCompatActivity {
         }
     }
 
+
     /**
      * Check if the phone support the ble
-      * @return
+     * Ask the bluetooth permission
+     * @return
      */
-    private boolean checkIfBleSupported() {
+    private Boolean askBluetoothPermission() {
         BluetoothManager bluetoothManager = getSystemService(BluetoothManager.class);
-        BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
-
-        if (bluetoothAdapter != null) {
-            if (!bluetoothAdapter.isEnabled()) {
-                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBtIntent, 1);
-                return true;
+        bluetoothAdapter = bluetoothManager.getAdapter();
+        if (bluetoothAdapter == null)
+        {
+            Toast.makeText(getApplicationContext(), "Bluetooth non supporté !", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        else
+        {
+            if (!bluetoothAdapter.isEnabled())
+            {
+                Toast.makeText(getApplicationContext(), "Bluetooth non activé !", Toast.LENGTH_SHORT).show();
+                Intent activeBlueTooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(activeBlueTooth, REQUEST_CODE_ENABLE_BLUETOOTH);
+            }
+            else
+            {
+                Toast.makeText(getApplicationContext(), "Bluetooth activé", Toast.LENGTH_SHORT).show();
+                bluetoothAdapter.getBluetoothLeScanner().startScan(mScanCallback);
             }
             return true;
         }
-        return false;
+
     }
 
     private final ScanCallback mScanCallback = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
+            Log.i(TAG, result.toString());
             if (result.getDevice().getAddress().equals(cardiacAddress)) {
                 cardiacDevice = result.getDevice();
                 beltFound = true;

@@ -2,9 +2,11 @@ package com.example.cyclosens;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -12,6 +14,7 @@ import android.bluetooth.le.ScanCallback;
 import android.content.Context;
 import android.content.Intent;
 import android.bluetooth.le.ScanResult;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,6 +28,7 @@ import com.google.firebase.components.Lazy;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @RequiresApi(api = Build.VERSION_CODES.M)
@@ -59,15 +63,6 @@ public class BleResearch extends AppCompatActivity {
 
     }
 
-    private void startLEBle(){
-        if (bluetoothAdapter.isEnabled()){
-            Log.i(TAG, "bluetoothAdapter enabled");
-            bluetoothAdapter.getBluetoothLeScanner().startScan(mScanCallback);
-            list();
-        } else {
-            Log.i(TAG, "bluetoothAdapter not enabled");
-        }
-    }
     private final ScanCallback mScanCallback = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
@@ -80,6 +75,17 @@ public class BleResearch extends AppCompatActivity {
             }
             Log.i("ble",result.getDevice().toString());
             bleResearchAdapter.notifyDataSetChanged();
+        }
+
+
+        @Override
+        public void onScanFailed(int errorCode) {
+            Log.i(TAG, "error");
+        }
+
+        @Override
+        public void onBatchScanResults(List<ScanResult> results) {
+            Log.i(TAG, "Batch scan results: ${results.size}");
         }
     };
 
@@ -105,7 +111,7 @@ public class BleResearch extends AppCompatActivity {
         if (resultCode == RESULT_OK)
         {
             Toast.makeText(getApplicationContext(), "Bluetooth activé", Toast.LENGTH_SHORT).show();
-            startLEBle();
+            startLeScanBLEWithPermission();
         }
         else
         {
@@ -134,10 +140,36 @@ public class BleResearch extends AppCompatActivity {
             else
             {
                 Toast.makeText(getApplicationContext(), "Bluetooth activé", Toast.LENGTH_SHORT).show();
-                startLEBle();
+                startLeScanBLEWithPermission();
             }
         }
 
     }
 
+
+    /**
+     * Vérification des permissions avant de lancer la recherche bluetooth
+     */
+    private void startLeScanBLEWithPermission() {
+        if (ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED) {
+            startLEBle();
+        } else {
+            ActivityCompat.requestPermissions(this,  new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
+    }
+
+    /**
+     * Lance la recherche bluetooth
+     */
+    private void startLEBle() {
+        if (bluetoothAdapter.isEnabled()) {
+            Log.i(TAG, "bluetoothAdapter enabled");
+            bluetoothAdapter.getBluetoothLeScanner().startScan(mScanCallback);
+            list();
+        } else {
+            Log.i(TAG, "bluetoothAdapter not enabled");
+        }
+    }
 }

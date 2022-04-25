@@ -93,6 +93,7 @@ public class BleResearchAdapter extends RecyclerView.Adapter<BleResearchAdapter.
 
             Intent i = new Intent(context, Devices.class);
             context.startActivity(i);
+            ((BleResearch)context).finish();
         }
     }
 }

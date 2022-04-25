@@ -90,6 +90,8 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
 
             Activity activityOnGoing = new Activity(key, getString(R.string.activity),strDate,duration,100,50); //CHANGER BPM ET STRENGH
 
+
+            bluetoothGatt.disconnect();
             Intent i = new Intent(OnGoingActivity.this, ActivityInformation.class);
             i.putExtra("activity",activityOnGoing);
             startActivity(i);

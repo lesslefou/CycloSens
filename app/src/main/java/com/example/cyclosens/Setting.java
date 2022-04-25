@@ -29,8 +29,6 @@ public class Setting extends AppCompatActivity {
 
     DatabaseReference mReference;
     String userId;
-    TextView nameT,surnameT,emailT,ageT,sizeT,weighT;
-    Button back,unsubscribe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,16 +49,16 @@ public class Setting extends AppCompatActivity {
                     String name = dataSnapshot.child("name").getValue().toString();
                     String surname = dataSnapshot.child("surname").getValue().toString();
                     String email = dataSnapshot.child("email").getValue().toString();
-                    String age = dataSnapshot.child("age").getValue().toString();
+                    /*String age = dataSnapshot.child("age").getValue().toString();
                     String size = dataSnapshot.child("email").getValue().toString();
-                    String weigh = dataSnapshot.child("weigh").getValue().toString();
+                    String weigh = dataSnapshot.child("weigh").getValue().toString();*/
 
                     binding.editName.setText(name);
                     binding.editSurname.setText(surname);
                     binding.editEmail.setText(email);
-                    binding.editAge.setText(age);
+                    /*binding.editAge.setText(age);
                     binding.editSize.setText(size);
-                    binding.editWeight.setText(weigh);
+                    binding.editWeight.setText(weigh);*/
                 }
 
                 @Override
