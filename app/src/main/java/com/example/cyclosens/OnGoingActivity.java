@@ -3,10 +3,15 @@ package com.example.cyclosens;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCallback;
+import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.cyclosens.classes.Activity;
 import com.example.cyclosens.activities.ActivityInformation;
@@ -43,6 +48,9 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
     private Location lastKnownLocation;
     private Date timeBegin, timeEnd;
 
+    private BluetoothDevice cardiacDevice, pedalDevice;
+    private BluetoothGatt bluetoothGatt = null;
+
     @SuppressLint("MissingPermission") //PERMISSION CHECKER EN AMONT
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +59,11 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
         setContentView(binding.getRoot());
 
         ghost = getIntent().getExtras().getBoolean("ghost");
+        cardiacDevice = getIntent().getParcelableExtra("cardiac");
+        //pedalDevice = getIntent().getParcelableExtra("pedal");
+
+        connectToDevice();
+
         timeBegin = Calendar.getInstance().getTime();
 
         // Retrieve location and camera position from saved instance state.
@@ -82,6 +95,28 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
             startActivity(i);
             finish();
         });
+
+    }
+
+    private void connectToDevice() {
+        bluetoothGatt = cardiacDevice.connectGatt(this, true, new BluetoothGattCallback() {
+            @Override
+            public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+                super.onConnectionStateChange(gatt, status, newState);
+                //Gérer la déconnexion du device au millieu de l'activité
+            }
+
+            @Override
+            public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+                super.onServicesDiscovered(gatt, status);
+            }
+
+            @Override
+            public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+                super.onCharacteristicRead(gatt, characteristic, status);
+            }
+        });
+        bluetoothGatt.connect();
     }
 
     private String createActivity(long duration, String date) {

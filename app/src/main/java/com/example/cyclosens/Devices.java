@@ -32,7 +32,7 @@ public class Devices extends AppCompatActivity {
         pedalDevice = "";
 
         binding.addCardiacDevice.setOnClickListener(v-> goSearchDevice("cardiac"));
-        binding.addPedalDevice.setOnClickListener(v-> goToInformation("pedal"));
+        binding.addPedalDevice.setOnClickListener(v-> goSearchDevice("pedal"));
 
         binding.cardiacDeviceName.setOnClickListener(v-> goToInformation("cardiac"));
         binding.pedalDeviceName.setOnClickListener(v-> goToInformation("pedal"));
