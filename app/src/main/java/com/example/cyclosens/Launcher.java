@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.cyclosens.classes.Utils;
 import com.example.cyclosens.databinding.ActivityLauncherBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,7 +27,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.database.core.Constants;
 
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class Launcher extends AppCompatActivity {
@@ -40,6 +40,7 @@ public class Launcher extends AppCompatActivity {
     private boolean locationPermissionGranted;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 2;
     private static final int REQUEST_CODE_ENABLE_BLUETOOTH = 1;
+    private int secs = 5; // Delay in seconds
 
 
     @Override
@@ -84,25 +85,32 @@ public class Launcher extends AppCompatActivity {
         }
     }
 
+
+
     private void checkIfOnGoingPossible() {
         if (locationPermissionGranted && askBluetoothPermission() ) {
-            if (beltFound /* && pedalFound*/ ) {
-                if (bluetoothAdapter.isEnabled()) {
-                    bluetoothAdapter.getBluetoothLeScanner().stopScan(mScanCallback);
-                    Intent i = new Intent(Launcher.this, OnGoingActivity.class);
-                    i.putExtra("ghost",ghost);
-                    i.putExtra("cardiac", cardiacDevice);
-                    //i.putExtra("pedal", pedalDevice);
-                    startActivity(i);
-                    finish();
-                }else {
-                    Log.i(TAG, "bluetoothAdapter not enabled");
-                }
-            }
-            else {
-                Toast.makeText(Launcher.this,"One or more sensors not found", Toast.LENGTH_SHORT).show();
-            }
 
+            //5 secondes waits for searching devices before connexion
+            Utils.delay(secs, () -> {
+                if (beltFound /* && pedalFound*/) {
+                    Log.i(TAG, "devices found");
+                    if (bluetoothAdapter.isEnabled()) {
+                        Intent i = new Intent(Launcher.this, OnGoingActivity.class);
+                        i.putExtra("ghost",ghost);
+                        i.putExtra("cardiac", cardiacDevice);
+                        //i.putExtra("pedal", pedalDevice);
+                        startActivity(i);
+                        finish();
+                    }else {
+                        Log.i(TAG, "bluetoothAdapter not enabled");
+                    }
+                }
+                else {
+                    bluetoothAdapter.getBluetoothLeScanner().stopScan(mScanCallback);
+                    Toast.makeText(Launcher.this,"One or more sensors not found", Toast.LENGTH_SHORT).show();
+                }
+
+            });
         } else {
             Toast.makeText(Launcher.this,"Pairing probleme", Toast.LENGTH_SHORT).show();
         }
@@ -143,10 +151,12 @@ public class Launcher extends AppCompatActivity {
     private final ScanCallback mScanCallback = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
-            Log.i(TAG, result.toString());
+            Log.i(TAG, result.getDevice().getAddress());
             if (result.getDevice().getAddress().equals(cardiacAddress)) {
+                Log.i(TAG, "cardiac device found");
                 cardiacDevice = result.getDevice();
                 beltFound = true;
+                bluetoothAdapter.getBluetoothLeScanner().stopScan(mScanCallback);
             } else if (result.getDevice().getAddress().equals(pedalAddress)) {
                 pedalDevice = result.getDevice();
                 pedalFound = true;

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
@@ -28,10 +29,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BleResearchAdapter extends RecyclerView.Adapter<BleResearchAdapter.ViewHolder> {
-
+    private static ClickListener clickListener;
     private final ArrayList<BluetoothDevice> bleDevices;
-    private final String device;
-    private Context context;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView name;
@@ -47,10 +46,8 @@ public class BleResearchAdapter extends RecyclerView.Adapter<BleResearchAdapter.
         }
     }
 
-    public BleResearchAdapter(ArrayList<BluetoothDevice> bleDevices, String device, Context context) {
+    public BleResearchAdapter(ArrayList<BluetoothDevice> bleDevices) {
         this.bleDevices = bleDevices;
-        this.device = device;
-        this.context = context;
     }
 
     @NonNull
@@ -72,7 +69,7 @@ public class BleResearchAdapter extends RecyclerView.Adapter<BleResearchAdapter.
         holder.uuid.setText(device.getAddress());
 
         holder.itemLayout.setOnClickListener(v-> {
-            clickListener(device);
+            clickListener.onItemClick(device);
         });
 
     }
@@ -82,18 +79,11 @@ public class BleResearchAdapter extends RecyclerView.Adapter<BleResearchAdapter.
         return bleDevices.size();
     }
 
-    private void clickListener(BluetoothDevice bluetoothDevice) {
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (firebaseUser != null) {
-            String userId = firebaseUser.getUid();
-            DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("user").child(userId).child("bleDevices").child(device);
-            mRef.child("name").setValue(bluetoothDevice.getName());
-            mRef.child("address").setValue(bluetoothDevice.getAddress());
-            Log.d("adapter", mRef.toString());
+    public interface ClickListener {
+        void onItemClick(BluetoothDevice bluetoothDevice);
+    }
 
-            Intent i = new Intent(context, Devices.class);
-            context.startActivity(i);
-            ((BleResearch)context).finish();
-        }
+    public void setOnItemClickListener(ClickListener clickListener) {
+        BleResearchAdapter.clickListener = clickListener;
     }
 }

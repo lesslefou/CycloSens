@@ -24,7 +24,11 @@ import android.widget.Toast;
 
 import com.example.cyclosens.activities.ActivitiesAdapter;
 import com.example.cyclosens.databinding.ActivityBleResearchBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.components.Lazy;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -52,13 +56,29 @@ public class BleResearch extends AppCompatActivity {
         bleDevices = new ArrayList<BluetoothDevice>();
 
         monRecycler = binding.recycleViewBle;
-        bleResearchAdapter = new BleResearchAdapter(bleDevices, device, this);
+        bleResearchAdapter = new BleResearchAdapter(bleDevices);
         monRecycler.setAdapter(bleResearchAdapter);
         monRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
         if(bleResearchAdapter != null){
             Log.i(TAG, "bleResearchAdapter not null");
             askBluetoothPermission();
+
+            bleResearchAdapter.setOnItemClickListener(bluetoothDevice -> {
+                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                if (firebaseUser != null) {
+                    String userId = firebaseUser.getUid();
+                    DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("user").child(userId).child("bleDevices").child(device);
+                    mRef.child("name").setValue(bluetoothDevice.getName());
+                    mRef.child("address").setValue(bluetoothDevice.getAddress());
+                    Log.d("adapter", mRef.toString());
+
+                    bluetoothAdapter.getBluetoothLeScanner().stopScan(mScanCallback);
+                    Intent i = new Intent(BleResearch.this, Devices.class);
+                    startActivity(i);
+                    finish();
+                }
+            });
         }
 
     }
@@ -67,13 +87,12 @@ public class BleResearch extends AppCompatActivity {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             int index = bleDevices.indexOf(result.getDevice());
-            Log.i("index", String.valueOf(index));
             if (index != -1) {
                 bleDevices.set(index, result.getDevice());
             } else {
+                Log.i("ble",result.getDevice().toString());
                 bleDevices.add(result.getDevice());
             }
-            Log.i("ble",result.getDevice().toString());
             bleResearchAdapter.notifyDataSetChanged();
         }
 
@@ -89,8 +108,8 @@ public class BleResearch extends AppCompatActivity {
         }
     };
 
+    //FAUT IL LE LAISSER ???
     private void list() {
-
         Set<BluetoothDevice> bleBonded = bluetoothAdapter.getBondedDevices();
 
         for (BluetoothDevice bt : bleBonded) {
@@ -120,7 +139,7 @@ public class BleResearch extends AppCompatActivity {
     }
 
     /**
-     * Demande acceptation des permissions
+     * Demande acceptation permission bluetooth
      */
     private void askBluetoothPermission() {
         BluetoothManager bluetoothManager = getSystemService(BluetoothManager.class);
@@ -148,7 +167,7 @@ public class BleResearch extends AppCompatActivity {
 
 
     /**
-     * Vérification des permissions avant de lancer la recherche bluetooth
+     * Vérification permission localisation avant de lancer la recherche bluetooth
      */
     private void startLeScanBLEWithPermission() {
         if (ActivityCompat.checkSelfPermission(
@@ -172,4 +191,5 @@ public class BleResearch extends AppCompatActivity {
             Log.i(TAG, "bluetoothAdapter not enabled");
         }
     }
+
 }
