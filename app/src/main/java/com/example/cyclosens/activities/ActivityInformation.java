@@ -8,12 +8,13 @@ import android.util.Log;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.cyclosens.classes.MapData;
 import com.example.cyclosens.R;
 import com.example.cyclosens.classes.Activity;
+import com.example.cyclosens.classes.Position;
 import com.example.cyclosens.databinding.ActivityInformationBinding;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -22,34 +23,25 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.libraries.places.api.Places;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import com.google.gson.Gson;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-
+import com.google.firebase.database.ValueEventListener;
 
 public class ActivityInformation extends AppCompatActivity implements OnMapReadyCallback {
     private static final String TAG = ActivityInformation.class.getSimpleName(); //POUR LES LOG
     private ActivityInformationBinding binding;
     private Activity activity;
     private GoogleMap mMap;
-    private Double originLatitude = 28.5021359;
-    private Double originLongitude = 77.4054901;
-    private Double destinationLatitude = 28.5151087;
-    private Double destinationLongitude = 77.3932163;
 
 
 
@@ -73,138 +65,58 @@ public class ActivityInformation extends AppCompatActivity implements OnMapReady
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        binding.btnDelete.setOnClickListener(view -> deleteActivity());
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        LatLng originLocation = new LatLng(originLatitude, originLongitude);
-        mMap.addMarker(new MarkerOptions().position(originLocation));
 
-        LatLng destinationLocation = new LatLng(originLatitude, originLongitude);
-        mMap.addMarker(new MarkerOptions().position(destinationLocation));
+        ArrayList<Position> locationDouble = activity.getPositionList();
+        ArrayList<LatLng> location = new ArrayList<>();
 
+        PolylineOptions line = new PolylineOptions();
+        for (int i = 0; i < locationDouble.size(); i++) {
+            location.add(new LatLng(locationDouble.get(i).getLat(), locationDouble.get(i).getLng()));
 
-        String apiKey ="AIzaSyAA_vRbbWvsLYO-axNqR7pYSFSJz2IxypE";
-        if (!Places.isInitialized()) {
-            Places.initialize(this, apiKey);
+            mMap.addPolyline(line.add( //On rajoute a notre ligne
+                    location.get(i)). //L'element actuel de l'array list
+                            width(5) //specify the width of poly line
+                    .color(Color.GREEN) //add color to our poly line.
+                    .geodesic(true)); //make our poly line geodesic
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location.get(i), 14));
         }
 
-        String urll = getDirectionURL(originLocation, destinationLocation, apiKey);
-        GetDirection getDirection = new GetDirection(urll);
-        getDirection.execute();
-
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(originLocation, 13f));
+        //On rajoute un marqueur au début du track
+        mMap.addMarker(new MarkerOptions().position(location.get(0)).title("Start"));
+        //On recupere la taille totale de l'array liste
+        int size = location.size();
+        //On rajoute un marqueur à la fin du track
+        mMap.addMarker(new MarkerOptions().position(location.get(size-1)).title("End"));
     }
 
-    private String getDirectionURL (LatLng origin, LatLng dest, String secret) {
-        return "https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}" +
-                "&destination=${dest.latitude},${dest.longitude}" +
-                "&sensor=false" +
-                "&mode=driving" +
-                "&key=$secret";
-    }
+    private void deleteActivity() {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (firebaseUser != null) {
+            String userId = firebaseUser.getUid();
 
-
-    private class GetDirection extends AsyncTask<Void, Void, List<List<LatLng>>> {
-        String url = "";
-
-        public GetDirection (String url) {
-            this.url = url;
-        }
-
-        @Override
-        protected List<List<LatLng>> doInBackground (Void... params) {
-            Log.i(TAG, "doInBackground");
-            OkHttpClient client = new OkHttpClient();
-            Request request =  new Request.Builder().url(url).build();
-            Response response = null;
-            try {
-                response = client.newCall(request).execute();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            String data = null;
-            try {
-                data = response.body().string();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            ArrayList<List<LatLng>> result = new ArrayList<List<LatLng>>();
-            try {
-                MapData respObj = new Gson().fromJson(data, MapData.class);
-                ArrayList<LatLng> path = new ArrayList<LatLng>();
-                for (int i = 0; i< respObj.routes.get(0).legs.get(0).steps.size(); i++){
-                    path.addAll(decodePolyline(respObj.routes.get(0).legs.get(0).steps.get(i).polyline.points));
+            DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("user").child(userId).child("Activities");
+            Log.i(TAG, activity.getKey());
+            mRef.child(activity.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    mRef.child(activity.getKey()).removeValue();
+                    finish();
                 }
-                result.add(path);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return result;
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         }
 
-        protected void onPostExecute(List<List<LatLng>> result) {
-            Log.i(TAG, "onPostExecute");
-            PolylineOptions lineoption = new PolylineOptions();
-            for (int i=0; i<result.size(); i++){
-                lineoption.addAll(result.get(i));
-                lineoption.width(10f);
-                lineoption.color(Color.GREEN);
-                lineoption.geodesic(true);
-            }
-            mMap.addPolyline(lineoption);
-        }
-
-    }
-
-
-    private List<LatLng> decodePolyline (String encoded) {
-        ArrayList<LatLng> poly = new ArrayList<>();
-        int index = 0;
-        int len = encoded.length();
-        int lat = 0;
-        int lng = 0;
-
-        while (index < len) {
-            int b, shift = 0, result = 0;
-            do {
-                b = encoded.charAt(index++) - 63;
-                result |= (b & 0x1f) << shift;
-                shift += 5;
-            } while (b >= 0x20);
-
-            int dlat;
-            if ((result & 1) != 0) {
-                dlat = ~(result >> 1);
-            } else {
-                dlat = result >> 1;
-            }
-
-            lat += dlat;
-            shift = 0;
-            result = 0;
-
-            do {
-                b = encoded.charAt(index++) - 63;
-                result |= (b & 0x1f) << shift;
-                shift += 5;
-            } while (b >= 0x20);
-
-            int dlng;
-            if ((result & 1) != 0) {
-                dlng = ~(result >> 1);
-            } else {
-                dlng = result >> 1;
-            }
-
-            lng += dlng;
-            LatLng latLng = new LatLng((lat / 1E5),(lng/ 1E5));
-            poly.add(latLng);
-        }
-        return poly;
     }
 
     private void updateNameActivity() {

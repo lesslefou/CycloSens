@@ -5,10 +5,10 @@
 
     <string name="log_in">Log In</string>
     <string name="sign_up">Sign Up</string>
-    <string name="name">Name</string>
-    <string name="surname">Surname</string>
-    <string name="email">Email</string>
-    <string name="password">Password</string>
+    <string name="name">Name : </string>
+    <string name="surname">Surname : </string>
+    <string name="email">Email : </string>
+    <string name="password">Password : </string>
     <string name="resetPassword">Forgot your password ?</string>
     <string name="back">Back</string>
     <string name="emailConfirmation">You need to confirm your email before log in</string>
@@ -35,11 +35,8 @@
     <string name="error">Error</string>
 
     <string name="setting">Setting</string>
-    <string name="age">Age</string>
-    <string name="size">Size</string>
-    <string name="weight">Weight</string>
     <string name="logout">Logout</string>
-    <string name="unsubscribe">Unsubscribe</string>
+    <string name="unsubscribe">  Unsubscribe  </string>
     <string name="dialogue_message_unsubscribe">Are you sure that you want to quite our app?</string>
     <string name="yes_answer">Yes</string>
     <string name="no_answer">No</string>
@@ -69,6 +66,7 @@
     <string name="changeName">Enter the name of the activity</string>
     <string name="validate">Validate</string>
     <string name="annulation">Annulation</string>
+    <string name="delete_activity">Delete Activity</string>
 
     <string name="device">Devices</string>
     <string name="cardiacDevice">Cardiac Device</string>

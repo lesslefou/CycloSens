@@ -199,7 +199,7 @@ public class Sign_Up extends AppCompatActivity {
 
         Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_background)
-                .setContentTitle(String.valueOf(R.id.app_name))
+                .setContentTitle(getString(R.string.app_name))
                 .setContentText("Welcome on our superApp !!")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)

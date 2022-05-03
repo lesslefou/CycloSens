@@ -1,5 +1,7 @@
 package com.example.cyclosens;
 
+import static android.bluetooth.BluetoothGatt.GATT_SUCCESS;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
@@ -7,12 +9,16 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
+import android.bluetooth.BluetoothGattService;
+import android.bluetooth.BluetoothProfile;
 import android.content.Intent;
 import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
+import com.example.cyclosens.classes.Position;
 import com.example.cyclosens.classes.Activity;
 import com.example.cyclosens.activities.ActivityInformation;
 import com.example.cyclosens.databinding.ActivityOnGoingBinding;
@@ -31,14 +37,18 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final String TAG = OnGoingActivity.class.getSimpleName();
     private static final String KEY_LOCATION = "location";
+    private static final int GATT_INTERNAL_ERROR = 129;
     private ActivityOnGoingBinding binding;
 
     private boolean ghost;
@@ -47,7 +57,8 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Location lastKnownLocation;
     private Date timeBegin, timeEnd;
-
+    private ArrayList<Position> positionList;
+    private LocationListener locationListener;
     private BluetoothDevice cardiacDevice, pedalDevice;
     private BluetoothGatt bluetoothGatt = null;
 
@@ -61,6 +72,14 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
         ghost = getIntent().getExtras().getBoolean("ghost");
         cardiacDevice = getIntent().getParcelableExtra("cardiac");
         //pedalDevice = getIntent().getParcelableExtra("pedal");
+
+        positionList = new ArrayList<>();
+
+        positionList.add(new Position(43.117030,5.932195));
+        positionList.add(new Position(43.118030,5.933195));
+        positionList.add(new Position(43.119030,5.934195));
+
+        locationListener = location -> updateLocation(location);
 
         connectToDevice();
 
@@ -84,11 +103,11 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             String strDate = dateFormat.format(date);
 
-            String key = createActivity(duration, strDate); //SAVE THE DATA ON THE DATABASE
+            String key = createActivity(duration, strDate, positionList); //SAVE THE DATA ON THE DATABASE
 
             //GERER GESTION ERROR GetUID User
 
-            Activity activityOnGoing = new Activity(key, getString(R.string.activity),strDate,duration,100,50); //CHANGER BPM ET STRENGH
+            Activity activityOnGoing = new Activity(key, getString(R.string.activity),strDate,duration,100,50,positionList); //CHANGER BPM ET STRENGH
 
             Log.i(TAG, "deconnection du device");
             bluetoothGatt.disconnect();
@@ -97,7 +116,22 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
             startActivity(i);
             finish();
         });
+    }
 
+    private void updateLocation(Location location) {
+        positionList.add(new Position(location.getLatitude(), location.getLongitude()));
+    }
+
+
+    private static final UUID SERVICE_UUID = UUID.fromString("00001234-cc7a-482a-984a-7f2ed5b3e58f");
+    private static final UUID CHARACTERISTIC_NOTIFY_UUID =  UUID.fromString("0000dead-8e22-4541-9d4c-21edae82ed19");
+    private static final UUID CLIENT_CHARACTERISTIC_CONFIG_UUID = convertFromInteger(0x2902);
+
+    private static UUID convertFromInteger(int i) {
+        final long MSB = 0x0000000000001000L;
+        final long LSB = 0x800000805f9b34fbL;
+        long value = i & 0xFFFFFFFF;
+        return new UUID(MSB | (value << 32), LSB);
     }
 
     private void connectToDevice() {
@@ -105,23 +139,81 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
             @Override
             public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
                 super.onConnectionStateChange(gatt, status, newState);
+                if(status == GATT_SUCCESS) {
+                    if (newState == BluetoothProfile.STATE_CONNECTED) {
+                        Log.i(TAG, "Connected to GATT server.");
+                        // Attempts to discover services after successful connection.
+                        Log.i(TAG, "Attempting to start service discovery:" +
+                        gatt.discoverServices());
+                    } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+                        // We successfully disconnected on our own request
+                        Log.i(TAG, "Disconnected from GATT server.");
+                        gatt.close();
+                    } else {
+                        // We're CONNECTING or DISCONNECTING, ignore for now
+                    }
+                } else {
+                    // An error happened...figure out what happened!
+                    gatt.close();
+                }
                 //Gérer la déconnexion du device au millieu de l'activité
             }
 
             @Override
             public void onServicesDiscovered(BluetoothGatt gatt, int status) {
                 super.onServicesDiscovered(gatt, status);
+                // Check if the service discovery succeeded. If not disconnect
+                if (status == BluetoothGatt.GATT_SUCCESS) {
+                    Log.w(TAG, "BluetoothGatt.GATT_SUCCESS");
+                    final List<BluetoothGattService> lBLEservices = gatt.getServices();
+                    for(BluetoothGattService test: lBLEservices){
+                        Log.i(TAG, "UUID: " + test.getUuid());
+                    }
+                    Log.i(TAG, "Découverte de " + lBLEservices.size() + " Caracs.");
+                    BluetoothGattService lService = gatt.getService(SERVICE_UUID);
+                    if(lService != null){
+                        BluetoothGattCharacteristic lCharacteristic = lService.getCharacteristic(CHARACTERISTIC_NOTIFY_UUID);
+                        if(lCharacteristic != null){
+                            gatt.setCharacteristicNotification(lCharacteristic, true);
+                            BluetoothGattDescriptor lDescriptor = lCharacteristic.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG_UUID);
+                            lDescriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                            gatt.writeDescriptor(lDescriptor);
+                        }
+                        else{
+                            Log.i(TAG, "Characteristic specified not found");
+                        }
+                    }
+                    else{
+                        Log.i(TAG, "Service specified not found");
+                    }
+                } else {
+                    Log.w(TAG, "onServicesDiscovered received: " + status);
+                    bluetoothGatt.disconnect();
+                }
             }
 
             @Override
             public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
                 super.onCharacteristicRead(gatt, characteristic, status);
             }
+
+            @Override
+            public void onCharacteristicChanged(BluetoothGatt pGatt, BluetoothGattCharacteristic pCharacteristic) {
+                Log.i(TAG, "onCharacteristicChanged: " + pCharacteristic.getValue());
+                byte[] res = pCharacteristic.getValue(); //Tableau de byte contenant les données mis dans la charactéristic
+
+                //Faire un traitement sur les données reçues
+
+                //Si on veut ecrire quelque chose en retour dans la charac
+                //pCharacteristic.setValue(lToSend);
+                //pGatt.writeCharacteristic(pCharacteristic);
+            }
         });
+
         bluetoothGatt.connect();
     }
 
-    private String createActivity(long duration, String date) {
+    private String createActivity(long duration, String date, ArrayList<Position> positionList) {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser != null) {
             String userId = firebaseUser.getUid();
@@ -135,6 +227,7 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
             activity.put("duration", duration);
             activity.put("bpmAv", 100); //METTRE A JOUR
             activity.put("strenghAv", 50); //METTRE A JOUR
+            activity.put("positionList", positionList);
             mRef.updateChildren(activity);
 
             return key;

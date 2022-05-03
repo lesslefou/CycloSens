@@ -7,49 +7,45 @@
     tools:context=".MainActivity">
 
 
-    <Button
-        android:id="@+id/btn_sign"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/sign_up"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        android:id="@+id/imageMain"
+        android:layout_width="350dp"
+        android:layout_height="300dp"
+        android:src="@drawable/cyclosenslogo"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.4"/>
 
     <Button
         android:id="@+id/btn_log"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:text="@string/log_in"
-        app:layout_constraintEnd_toStartOf="@+id/btn_sign"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <TextView
-        android:id="@+id/app_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/app_name"
-        android:textColor="#FF0000"
-        android:textSize="50sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="20dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="10dp"
+        android:background="@color/black"
+        android:textColor="@color/orange"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/imageMain"
-        app:layout_constraintVertical_bias="0.25" />
+        app:layout_constraintEnd_toStartOf="@+id/btn_sign"
+        app:layout_constraintTop_toBottomOf="@id/imageMain"/>
 
-
-    <ImageView
-        android:id="@+id/imageMain"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/btn_sign"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_launcher_background"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/app_name"
-        app:layout_constraintVertical_bias="0.5" />
+        android:text="@string/sign_up"
+        android:textSize="20dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@color/black"
+        android:textColor="@color/orange"
+        app:layout_constraintStart_toEndOf="@id/btn_log"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imageMain"/>
 
 
 

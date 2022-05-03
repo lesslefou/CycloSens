@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toolbar;
 
 import com.example.cyclosens.activities.ActivitiesFragment;
 import com.example.cyclosens.databinding.ActivityWelcomeBinding;

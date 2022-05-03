@@ -42,23 +42,16 @@ public class Setting extends AppCompatActivity {
         if (firebaseUser != null) {
             userId = firebaseUser.getUid();
 
-            mReference = FirebaseDatabase.getInstance().getReference("user").child(userId);
+            mReference = FirebaseDatabase.getInstance().getReference("user").child(userId).child("Details");
             mReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     String name = dataSnapshot.child("name").getValue().toString();
                     String surname = dataSnapshot.child("surname").getValue().toString();
                     String email = dataSnapshot.child("email").getValue().toString();
-                    /*String age = dataSnapshot.child("age").getValue().toString();
-                    String size = dataSnapshot.child("email").getValue().toString();
-                    String weigh = dataSnapshot.child("weigh").getValue().toString();*/
-
                     binding.editName.setText(name);
                     binding.editSurname.setText(surname);
                     binding.editEmail.setText(email);
-                    /*binding.editAge.setText(age);
-                    binding.editSize.setText(size);
-                    binding.editWeight.setText(weigh);*/
                 }
 
                 @Override

@@ -14,16 +14,23 @@ import android.view.ViewGroup;
 
 import com.example.cyclosens.R;
 import com.example.cyclosens.classes.Activity;
+import com.example.cyclosens.classes.Position;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ActivitiesFragment extends Fragment {
     private static final String TAG = ActivitiesFragment.class.getSimpleName(); //POUR LES LOG
@@ -64,6 +71,7 @@ public class ActivitiesFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot data : snapshot.getChildren()) {
+                    ArrayList<Position> location = new ArrayList<>();
                     String key = data.getKey();
                     String name = data.child("name").getValue(String.class);
                     String date = data.child("date").getValue(String.class);
@@ -71,10 +79,20 @@ public class ActivitiesFragment extends Fragment {
                     int bpmAv = data.child("bpmAv").getValue(int.class);
                     int strenghAv = data.child("bpmAv").getValue(int.class);
 
-                    Log.d("activity", "key :" + key );
+                    for (DataSnapshot data2 : data.child("positionList").getChildren()) {
+                        location.add(new Position(data2.child("latitude").getValue(Double.class),data2.child("longitude").getValue(Double.class)));
+                    }
+
+                    //TRANSFORME UN OBJET EN JSON
+                    final GsonBuilder builder = new GsonBuilder();
+                    final Gson gson = builder.create();
+                    final String json = gson.toJson(location);
+                    Log.i(TAG,"Resultat = " + json);
+
+                    Log.d(TAG, "key :" + key );
                     if (key != null) {
-                        Log.d(TAG, key + name + date +  duration);
-                        activities.add(new Activity(key, name, date, duration, bpmAv, strenghAv));
+                        Log.d(TAG, "key : " + key + " name : "  + name + " date : " + date + " duration : " + duration);
+                        activities.add(new Activity(key, name, date, duration, bpmAv, strenghAv,location));
                     }
                 }
                 adapter.notifyDataSetChanged();
