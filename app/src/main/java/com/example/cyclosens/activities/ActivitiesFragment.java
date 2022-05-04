@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.example.cyclosens.R;
 import com.example.cyclosens.classes.Activity;
@@ -34,15 +35,14 @@ import java.util.Map;
 
 public class ActivitiesFragment extends Fragment {
     private static final String TAG = ActivitiesFragment.class.getSimpleName(); //POUR LES LOG
-
-    private RecyclerView recyclerView;
     private ActivitiesAdapter adapter;
     private ArrayList<Activity> activities;
-    private DatabaseReference mRef;
+    private ProgressBar progressBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
@@ -51,6 +51,7 @@ public class ActivitiesFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_activities, container, false);
 
         activities = new ArrayList<Activity>();
+        progressBar = v.findViewById(R.id.progressBar);
 
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser != null) {
@@ -65,11 +66,12 @@ public class ActivitiesFragment extends Fragment {
     }
 
     private void getActivities(String userId) {
-        mRef =  FirebaseDatabase.getInstance().getReference("user").child(userId).child("Activities");
+        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("user").child(userId).child("Activities");
         Query post = mRef;
         post.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                progressBar.setVisibility(View.GONE);
                 for (DataSnapshot data : snapshot.getChildren()) {
                     ArrayList<Position> location = new ArrayList<>();
                     String key = data.getKey();
@@ -77,22 +79,23 @@ public class ActivitiesFragment extends Fragment {
                     String date = data.child("date").getValue(String.class);
                     long duration = data.child("duration").getValue(long.class);
                     int bpmAv = data.child("bpmAv").getValue(int.class);
-                    int strenghAv = data.child("bpmAv").getValue(int.class);
+                    int strenghAv = data.child("strenghAv").getValue(int.class);
+                    Float speedAv = data.child("speedAv").getValue(Float.class);
 
                     for (DataSnapshot data2 : data.child("positionList").getChildren()) {
-                        location.add(new Position(data2.child("latitude").getValue(Double.class),data2.child("longitude").getValue(Double.class)));
+                        location.add(new Position(data2.child("lat").getValue(Double.class),data2.child("lng").getValue(Double.class)));
                     }
 
-                    //TRANSFORME UN OBJET EN JSON
+                    /*//TRANSFORME UN OBJET EN JSON
                     final GsonBuilder builder = new GsonBuilder();
                     final Gson gson = builder.create();
                     final String json = gson.toJson(location);
-                    Log.i(TAG,"Resultat = " + json);
+                    Log.i(TAG,"Resultat = " + json);*/
 
                     Log.d(TAG, "key :" + key );
                     if (key != null) {
                         Log.d(TAG, "key : " + key + " name : "  + name + " date : " + date + " duration : " + duration);
-                        activities.add(new Activity(key, name, date, duration, bpmAv, strenghAv,location));
+                        activities.add(new Activity(key, name, date, duration, bpmAv, strenghAv,speedAv,location));
                     }
                 }
                 adapter.notifyDataSetChanged();
@@ -109,7 +112,7 @@ public class ActivitiesFragment extends Fragment {
     //Initialise the recyclerView
     private  void initRecycleView(View v){
         Log.d(TAG,"initRecycleView: init recyclerview");
-        recyclerView = v.findViewById(R.id.gameRecycler);
+        RecyclerView recyclerView = v.findViewById(R.id.gameRecycler);
         adapter = new ActivitiesAdapter(R.layout.activity_activities_adapter,activities);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

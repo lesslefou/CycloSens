@@ -63,6 +63,9 @@
     <string name="duration">Duration : </string>
     <string name="bpm">BPM : </string>
     <string name="strengh">Strengh : </string>
+    <string name="bpmAv">BPM Average : </string>
+    <string name="strenghAv">Strengh Average : </string>
+    <string name="speedAv">Speed Average :</string>
     <string name="changeName">Enter the name of the activity</string>
     <string name="validate">Validate</string>
     <string name="annulation">Annulation</string>

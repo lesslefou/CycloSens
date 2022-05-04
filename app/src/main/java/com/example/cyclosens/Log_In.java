@@ -9,12 +9,15 @@ import android.bluetooth.BluetoothManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.cyclosens.activities.ActivitiesFragment;
+import com.example.cyclosens.activities.ActivityInformation;
 import com.example.cyclosens.classes.User;
 import com.example.cyclosens.databinding.ActivityLogInBinding;
 import com.example.cyclosens.databinding.ActivitySignUpBinding;
@@ -37,7 +40,9 @@ public class Log_In extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         //If the user didn't log out he will see this page, he will directly go on the welcome page
         if (mAuth.getCurrentUser() != null){
-            startActivity(new Intent(getApplicationContext(),Welcome.class));
+            Intent i = new Intent(Log_In.this, Welcome.class);
+            i.putExtra("fragment", "start");
+            startActivity(i);
             finish();
         }
 

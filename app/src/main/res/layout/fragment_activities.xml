@@ -24,6 +24,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
 
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="@android:style/Widget.ProgressBar.Large"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/gameRecycler"
             android:layout_width="match_parent"

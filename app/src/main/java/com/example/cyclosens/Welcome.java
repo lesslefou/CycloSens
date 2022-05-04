@@ -35,8 +35,13 @@ public class Welcome extends AppCompatActivity {
         //Set the first fragment
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
-        StartFragment startFragment = new StartFragment();
-        transaction.add(R.id.fragment_place, startFragment);
+        if (getIntent().getExtras().getString("fragment").equals("start")) {
+            StartFragment startFragment = new StartFragment();
+            transaction.add(R.id.fragment_place, startFragment);
+        } else {
+            ActivitiesFragment activitiesFragment = new ActivitiesFragment();
+            transaction.add(R.id.fragment_place, activitiesFragment);
+        }
         transaction.commit();
 
     }

@@ -156,11 +156,14 @@ public class Launcher extends AppCompatActivity {
                 Log.i(TAG, "cardiac device found");
                 cardiacDevice = result.getDevice();
                 beltFound = true;
-                bluetoothAdapter.getBluetoothLeScanner().stopScan(mScanCallback);
+                bluetoothAdapter.getBluetoothLeScanner().stopScan(mScanCallback); //A SUPPRIMER
             } else if (result.getDevice().getAddress().equals(pedalAddress)) {
                 pedalDevice = result.getDevice();
                 pedalFound = true;
             }
+            /*if (pedalFound && beltFound) {
+                bluetoothAdapter.getBluetoothLeScanner().stopScan(mScanCallback);
+            }*/
         }
     };
 

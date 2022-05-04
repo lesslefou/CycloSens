@@ -1,9 +1,11 @@
 package com.example.cyclosens.activities;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -12,7 +14,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.cyclosens.Log_In;
+import com.example.cyclosens.MainActivity;
 import com.example.cyclosens.R;
+import com.example.cyclosens.Welcome;
 import com.example.cyclosens.classes.Activity;
 import com.example.cyclosens.classes.Position;
 import com.example.cyclosens.databinding.ActivityInformationBinding;
@@ -39,26 +44,25 @@ import com.google.firebase.database.ValueEventListener;
 
 public class ActivityInformation extends AppCompatActivity implements OnMapReadyCallback {
     private static final String TAG = ActivityInformation.class.getSimpleName(); //POUR LES LOG
-    private ActivityInformationBinding binding;
     private Activity activity;
-    private GoogleMap mMap;
-
+    private ActivityInformationBinding binding;
 
 
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityInformationBinding.inflate(getLayoutInflater());
+         binding = ActivityInformationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         activity = (Activity) getIntent().getExtras().getSerializable("activity");
 
         binding.name.setText(activity.getNameActivity());
         binding.date.setText(activity.getDateActivity());
-        binding.duration.setText("" + getString(R.string.duration) + activity.getDuration());
-        binding.bpmAv.setText("" + getString(R.string.bpm) + activity.getBpmAv());
-        binding.strenghAv.setText("" + getString(R.string.strengh) + activity.getStrenghAv());
+        binding.duration.setText("" + getString(R.string.duration) + " " + activity.getDuration());
+        binding.bpmAv.setText("" + getString(R.string.bpmAv) + " " + activity.getBpmAv());
+        binding.strenghAv.setText("" + getString(R.string.strenghAv) + " " + activity.getStrenghAv());
+        binding.speedAv.setText("" + getString(R.string.speedAv) + " " + activity.getSpeedAv());
         binding.settings.setOnClickListener(view -> updateNameActivity());
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -71,7 +75,6 @@ public class ActivityInformation extends AppCompatActivity implements OnMapReady
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
 
         ArrayList<Position> locationDouble = activity.getPositionList();
         ArrayList<LatLng> location = new ArrayList<>();
@@ -80,7 +83,7 @@ public class ActivityInformation extends AppCompatActivity implements OnMapReady
         for (int i = 0; i < locationDouble.size(); i++) {
             location.add(new LatLng(locationDouble.get(i).getLat(), locationDouble.get(i).getLng()));
 
-            mMap.addPolyline(line.add( //On rajoute a notre ligne
+            googleMap.addPolyline(line.add( //On rajoute a notre ligne
                     location.get(i)). //L'element actuel de l'array list
                             width(5) //specify the width of poly line
                     .color(Color.GREEN) //add color to our poly line.
@@ -89,11 +92,11 @@ public class ActivityInformation extends AppCompatActivity implements OnMapReady
         }
 
         //On rajoute un marqueur au début du track
-        mMap.addMarker(new MarkerOptions().position(location.get(0)).title("Start"));
+        googleMap.addMarker(new MarkerOptions().position(location.get(0)).title("Start"));
         //On recupere la taille totale de l'array liste
         int size = location.size();
         //On rajoute un marqueur à la fin du track
-        mMap.addMarker(new MarkerOptions().position(location.get(size-1)).title("End"));
+        googleMap.addMarker(new MarkerOptions().position(location.get(size-1)).title("End"));
     }
 
     private void deleteActivity() {
@@ -129,13 +132,14 @@ public class ActivityInformation extends AppCompatActivity implements OnMapReady
             params.setMargins(16,0,16,0);
             edittTxt.setLayoutParams(params);
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(ActivityInformation.this),R.style.MyDialogTheme);
+            AlertDialog.Builder builder = new AlertDialog.Builder(ActivityInformation.this,R.style.MyDialogTheme);
             builder.setTitle(R.string.changeName)
                     .setView(edittTxt)
                     .setPositiveButton(R.string.validate, (dialogInterface, i) -> {
                         activity.setNameActivity(edittTxt.getText().toString());
                         //MODIFIER AFFICHAGE
                         databaseUpdate();
+                        runOnUiThread(() -> binding.name.setText(activity.getNameActivity()));
                     })
                     .setNegativeButton(R.string.annulation, (dialogInterface, i) -> {
                        dialogInterface.cancel();
@@ -158,8 +162,18 @@ public class ActivityInformation extends AppCompatActivity implements OnMapReady
             activityUpdate.put("duration", activity.getDuration());
             activityUpdate.put("bpmAv", activity.getBpmAv());
             activityUpdate.put("strenghAv", activity.getStrenghAv());
+            activityUpdate.put("speedAv", activity.getSpeedAv());
+            activityUpdate.put("positionList", activity.getPositionList());
             mRef.updateChildren(activityUpdate);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        Intent i = new Intent(ActivityInformation.this, Welcome.class);
+        i.putExtra("fragment", "activities");
+        startActivity(i);
     }
 
 }
