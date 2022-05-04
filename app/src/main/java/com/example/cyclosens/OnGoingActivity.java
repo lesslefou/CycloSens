@@ -38,6 +38,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -61,6 +62,9 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
     private LocationListener locationListener;
     private BluetoothDevice cardiacDevice, pedalDevice;
     private BluetoothGatt bluetoothGatt = null;
+
+    private int nbOfBat = 0;
+    private int bpmValue = 0;
 
     @SuppressLint("MissingPermission") //PERMISSION CHECKER EN AMONT
     @Override
@@ -106,8 +110,7 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
             String key = createActivity(duration, strDate, positionList); //SAVE THE DATA ON THE DATABASE
 
             //GERER GESTION ERROR GetUID User
-
-            Activity activityOnGoing = new Activity(key, getString(R.string.activity),strDate,duration,100,50,positionList); //CHANGER BPM ET STRENGH
+            Activity activityOnGoing = new Activity(key, getString(R.string.activity),strDate,duration,bpmValue/nbOfBat,50,positionList); //CHANGER STRENGH
 
             Log.i(TAG, "deconnection du device");
             bluetoothGatt.disconnect();
@@ -199,8 +202,23 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
 
             @Override
             public void onCharacteristicChanged(BluetoothGatt pGatt, BluetoothGattCharacteristic pCharacteristic) {
-                Log.i(TAG, "onCharacteristicChanged: " + pCharacteristic.getValue());
-                byte[] res = pCharacteristic.getValue(); //Tableau de byte contenant les données mis dans la charactéristic
+                Log.i(TAG, "onCharacteristicChanged: " + Arrays.toString(pCharacteristic.getValue())); //look like an address
+                byte[] data = pCharacteristic.getValue(); //Tableau de byte contenant les données mis dans la charactéristic
+
+                if (data != null && data.length > 0) {
+                    final StringBuilder stringBuilder = new StringBuilder(data.length);
+                    for(byte byteChar : data)
+                        stringBuilder.append(String.format("%02X ", byteChar));
+
+                    int actualBpm = Integer.parseInt(stringBuilder.toString().trim());
+                    bpmValue += actualBpm;
+                    Log.i(TAG, "bpmValue : " + bpmValue);
+                    nbOfBat ++;
+
+                    runOnUiThread(() -> binding.bpm.setText(actualBpm + " bpm"));
+
+                    Log.i(TAG, stringBuilder.toString()); //Reel Value
+                }
 
                 //Faire un traitement sur les données reçues
 
@@ -225,7 +243,7 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
             activity.put("name",getString(R.string.activity));
             activity.put("date", date);
             activity.put("duration", duration);
-            activity.put("bpmAv", 100); //METTRE A JOUR
+            activity.put("bpmAv", bpmValue/nbOfBat);
             activity.put("strenghAv", 50); //METTRE A JOUR
             activity.put("positionList", positionList);
             mRef.updateChildren(activity);
