@@ -1,13 +1,7 @@
 package com.example.cyclosens.classes;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import com.google.android.gms.maps.model.LatLng;
-
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Activity  implements Serializable {
 
@@ -18,6 +12,7 @@ public class Activity  implements Serializable {
     private int bpmAv;
     private int strenghAv;
     private Float speedAv;
+    private Float distance;
     private ArrayList<Position> positionList;
 
     public String getNameActivity() { return nameActivity; }
@@ -25,8 +20,9 @@ public class Activity  implements Serializable {
     public long getDuration() { return duration; }
     public String getKey() { return key; }
     public int getBpmAv() { return bpmAv; }
-    public int getStrenghAv() { return strenghAv; }
+    public int getStrengthAv() { return strenghAv; }
     public Float getSpeedAv() { return speedAv; }
+    public Float getDistance() { return distance; }
     public ArrayList<Position> getPositionList() { return positionList; }
 
     public void setNameActivity(String nameActivity) { this.nameActivity = nameActivity; }
@@ -34,18 +30,20 @@ public class Activity  implements Serializable {
     public void setDuration(long duration) { this.duration = duration; }
     public void setKey(String key) { this.key = key; }
     public void setBpmAv(int bpmAv) { this.bpmAv = bpmAv; }
-    public void setStrenghAv(int strenghAv) { this.strenghAv = strenghAv; }
-    public void setStpeedAv(Float speedAv) { this.speedAv = speedAv; }
+    public void setStrengthAv(int strengthAv) { this.strenghAv = strengthAv; }
+    public void setSpeedAv(Float speedAv) { this.speedAv = speedAv; }
+    public void setDistance(Float distance) { this.distance = distance; }
     public void setPositionList(ArrayList<Position> positionList) { this.positionList = positionList; }
 
-    public Activity(String key, String nameActivity, String dateActivity, long duration, int bpmAv, int strenghAv, Float speedAv, ArrayList<Position> positionList) {
+    public Activity(String key, String nameActivity, String dateActivity, long duration, int bpmAv, int strengthAv, Float speedAv, Float distance, ArrayList<Position> positionList) {
         setKey(key);
         setNameActivity(nameActivity);
         setDateActivity(dateActivity);
         setDuration(duration);
         setBpmAv(bpmAv);
-        setStrenghAv(strenghAv);
-        setStpeedAv(speedAv);
+        setStrengthAv(strengthAv);
+        setSpeedAv(speedAv);
+        setDistance(distance);
         setPositionList(positionList);
     }
 }

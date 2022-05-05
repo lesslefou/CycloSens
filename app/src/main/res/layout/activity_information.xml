@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
-        android:textSize="30dp"
+        android:textSize="40dp"
         android:textColor="@color/orange"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
@@ -36,6 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
+        android:textSize="20sp"
         android:layout_marginTop="30dp"
         app:layout_constraintTop_toBottomOf="@+id/name"
         app:layout_constraintStart_toStartOf="parent"
@@ -46,6 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
+        android:textSize="20sp"
         app:layout_constraintTop_toTopOf="@+id/date"
         app:layout_constraintBottom_toBottomOf="@id/date"
         app:layout_constraintStart_toEndOf="@id/date"
@@ -64,23 +66,34 @@
         app:layout_constraintTop_toBottomOf="@id/date"
         android:layout_marginTop="30dp"/>
 
+    <TextView
+        android:id="@+id/totalDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="20dp"
+        app:layout_constraintTop_toBottomOf="@id/map"
+        app:layout_constraintBottom_toTopOf="@id/speedAv"/>
 
     <TextView
         android:id="@+id/speedAv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="20dp"
-        app:layout_constraintTop_toBottomOf="@id/map"
+        app:layout_constraintTop_toBottomOf="@id/totalDistance"
         app:layout_constraintBottom_toTopOf="@id/bpmAv"/>
-
 
     <TextView
         android:id="@+id/bpmAv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="20dp"
         app:layout_constraintTop_toBottomOf="@id/speedAv"
@@ -91,6 +104,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="20dp"
         app:layout_constraintTop_toBottomOf="@id/bpmAv"

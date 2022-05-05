@@ -37,10 +37,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import java.nio.ByteBuffer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -74,8 +76,8 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
 
     private int nbOfBat = 0;
     private int bpmValue = 0;
-    private int nbOfPowerCalculation = 0;
-    private int powerValue = 0;
+    private int nbOfStrengthCalculation = 0;
+    private int strengthValue = 0;
     private int nbOfSpeedCalculation = 0;
     private float speedValue = 0.0F;
 
@@ -139,8 +141,8 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
 
             if (nbOfBat == 0) { nbOfBat = 1; }
             if (nbOfSpeedCalculation == 0 ) { nbOfSpeedCalculation = 1; }
-            if (nbOfPowerCalculation == 0) { nbOfPowerCalculation = 1; }
-            Activity activityOnGoing = new Activity(key, getString(R.string.activity),strDate,duration,bpmValue/nbOfBat,powerValue/nbOfPowerCalculation,speedValue/nbOfSpeedCalculation,positionList); //CHANGER STRENGH
+            if (nbOfStrengthCalculation == 0) { nbOfStrengthCalculation = 1; }
+            Activity activityOnGoing = new Activity(key, getString(R.string.activity),strDate,duration,bpmValue/nbOfBat,strengthValue/nbOfStrengthCalculation,speedValue/nbOfSpeedCalculation,retrievedTotalDistance(positionList),positionList); //CHANGER STRENGH
 
             Log.i(TAG, "deconnection du device");
             bluetoothCardiacGatt.disconnect();
@@ -251,8 +253,8 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
             int finalActualValue = actualValue;
             if (device.equals("pedal")) {
                 runOnUiThread(() -> binding.puissanceMoyenne.setText("Puissance :" + finalActualValue));
-                powerValue += actualValue;
-                nbOfPowerCalculation ++;
+                strengthValue += actualValue;
+                nbOfStrengthCalculation ++;
             } else {
                 runOnUiThread(() -> binding.bpm.setText(finalActualValue + " bpm"));
                 bpmValue += actualValue;
@@ -314,31 +316,6 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
         }
     }
 
-    private String createActivity(long duration, String date, ArrayList<Position> positionList) {
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (firebaseUser != null) {
-            String userId = firebaseUser.getUid();
-            DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("user").child(userId).child("Activities");
-            String key = mRef.push().getKey();
-            mRef = mRef.child(key);
-
-            Map<String, Object> activity = new HashMap<>();
-            activity.put("name",getString(R.string.activity));
-            activity.put("date", date);
-            activity.put("duration", duration);
-            activity.put("bpmAv", bpmValue/nbOfBat);
-            activity.put("strenghAv", powerValue/nbOfPowerCalculation);
-            activity.put("speedAv", speedValue/nbOfSpeedCalculation);
-            activity.put("positionList", positionList);
-            mRef.updateChildren(activity);
-
-            return key;
-
-        }
-        return getString(R.string.error);
-    }
-
-
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         map = googleMap;
@@ -389,6 +366,97 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
             locationListener=null;
         }
     }
+
+    private String createActivity(long duration, String date, ArrayList<Position> positionList) {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (firebaseUser != null) {
+            String userId = firebaseUser.getUid();
+            String key = updateActivities(duration, date, positionList, userId);
+            updateActivitiesResume(userId);
+            return key;
+
+        }
+        return getString(R.string.error);
+    }
+
+    private void updateActivitiesResume(String userId) {
+        final int[] cpt = {0};
+        final Float[] totalDistance = new Float[1];
+        final Float[] avDistance = new Float[1];
+        final int[] avBPM = new int[1];
+        final int[] avStrength = new int[1];
+        final int[] nbActivities = new int[1];
+
+        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("user").child(userId).child("ResumeActivities");
+        mRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot data) {
+                if (cpt[0] == 0 ) {
+                    nbActivities[0] = Integer.parseInt(data.child("nbActivities").getValue().toString());
+                    totalDistance[0] = Float.parseFloat(data.child("totalDistance").getValue().toString());
+                    avDistance[0] = Float.parseFloat(data.child("avDistance").getValue().toString());
+                    avBPM[0] = Integer.parseInt(data.child("avBPM").getValue().toString());
+                    avStrength[0] = Integer.parseInt(data.child("avStrength").getValue().toString());
+
+                    cpt[0]++;
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {  }
+        });
+
+        Float totalDistanceActivity = retrievedTotalDistance(positionList);
+        Map<String, Object> activitiesResume = new HashMap<>();
+        activitiesResume.put("nbActivities",nbActivities[0] ++);
+        activitiesResume.put("totalDistance",totalDistance[0] + totalDistanceActivity);
+        activitiesResume.put("avDistance", (avDistance[0] + totalDistanceActivity)/(nbActivities[0] + 1));
+        activitiesResume.put("avBPM",(avBPM[0] + bpmValue/nbOfBat)/2);
+        activitiesResume.put("avStrength", (avStrength[0] + strengthValue/nbOfStrengthCalculation)/2);
+        mRef.updateChildren(activitiesResume);
+    }
+
+    private String updateActivities(long duration, String date, ArrayList<Position> positionList, String userId) {
+        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("user").child(userId).child("Activities");
+        String key = mRef.push().getKey();
+        mRef = mRef.child(key);
+
+        Map<String, Object> activity = new HashMap<>();
+        activity.put("name",getString(R.string.activity));
+        activity.put("date", date);
+        activity.put("duration", duration);
+        activity.put("bpmAv", bpmValue/nbOfBat);
+        activity.put("strengthAv", strengthValue/nbOfStrengthCalculation);
+        activity.put("speedAv", speedValue/nbOfSpeedCalculation);
+        activity.put("distance", retrievedTotalDistance(positionList));
+        activity.put("positionList", positionList);
+        mRef.updateChildren(activity);
+        return key;
+    }
+
+    private float retrievedTotalDistance(ArrayList<Position> positionList) {
+        float totalDistance = 0.0F;
+        for (int i=1; i<positionList.size(); i++) {
+            totalDistance += getDistanceBetweenTwoLocation(i);
+        }
+
+        /*float totalDistance = positionList
+                .stream()
+                .reduce(0, (subtotal, element) -> subtotal + getDistanceBetweenTwoLocation(element););*/
+        return totalDistance;
+    }
+
+    private float getDistanceBetweenTwoLocation(int i) {
+        Location locationA = new Location("point A");
+        locationA.setLatitude(positionList.get(i).getLat());
+        locationA.setLongitude(positionList.get(i).getLng());
+
+        Location locationB = new Location("point B");
+        locationB.setLatitude(positionList.get(i-1).getLat());
+        locationB.setLongitude(positionList.get(i-1).getLng());
+
+        return locationA.distanceTo(locationB);
+    }
+
 
 }
 

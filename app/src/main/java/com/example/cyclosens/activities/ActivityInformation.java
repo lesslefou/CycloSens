@@ -3,9 +3,7 @@ package com.example.cyclosens.activities;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -14,8 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.cyclosens.Log_In;
-import com.example.cyclosens.MainActivity;
 import com.example.cyclosens.R;
 import com.example.cyclosens.Welcome;
 import com.example.cyclosens.classes.Activity;
@@ -38,7 +34,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import com.google.firebase.database.ValueEventListener;
 
@@ -59,10 +54,11 @@ public class ActivityInformation extends AppCompatActivity implements OnMapReady
 
         binding.name.setText(activity.getNameActivity());
         binding.date.setText(activity.getDateActivity());
-        binding.duration.setText("" + getString(R.string.duration) + " " + activity.getDuration());
+        binding.duration.setText("" + getString(R.string.duration) + " " + activity.getDuration() + "s");
         binding.bpmAv.setText("" + getString(R.string.bpmAv) + " " + activity.getBpmAv());
-        binding.strenghAv.setText("" + getString(R.string.strenghAv) + " " + activity.getStrenghAv());
-        binding.speedAv.setText("" + getString(R.string.speedAv) + " " + activity.getSpeedAv());
+        binding.strenghAv.setText("" + getString(R.string.strengthAv) + " " + activity.getStrengthAv());
+        binding.speedAv.setText("" + getString(R.string.speedAv) + " " + activity.getSpeedAv() + "m/s");
+        binding.totalDistance.setText("" + getString(R.string.distanceTotal) + " " + activity.getDistance() + "m");
         binding.settings.setOnClickListener(view -> updateNameActivity());
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -137,7 +133,6 @@ public class ActivityInformation extends AppCompatActivity implements OnMapReady
                     .setView(edittTxt)
                     .setPositiveButton(R.string.validate, (dialogInterface, i) -> {
                         activity.setNameActivity(edittTxt.getText().toString());
-                        //MODIFIER AFFICHAGE
                         databaseUpdate();
                         runOnUiThread(() -> binding.name.setText(activity.getNameActivity()));
                     })
@@ -161,8 +156,9 @@ public class ActivityInformation extends AppCompatActivity implements OnMapReady
             activityUpdate.put("date", activity.getDateActivity());
             activityUpdate.put("duration", activity.getDuration());
             activityUpdate.put("bpmAv", activity.getBpmAv());
-            activityUpdate.put("strenghAv", activity.getStrenghAv());
+            activityUpdate.put("strengthAv", activity.getStrengthAv());
             activityUpdate.put("speedAv", activity.getSpeedAv());
+            activityUpdate.put("distance", activity.getDistance());
             activityUpdate.put("positionList", activity.getPositionList());
             mRef.updateChildren(activityUpdate);
         }

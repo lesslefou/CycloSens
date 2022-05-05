@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Toolbar;
 
 import com.example.cyclosens.activities.ActivitiesFragment;
+import com.example.cyclosens.activities.ActivityInformation;
 import com.example.cyclosens.databinding.ActivityWelcomeBinding;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -114,5 +115,14 @@ public class Welcome extends AppCompatActivity {
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
+    }
+
+    @Override
+    public void onBackPressed() {
+        getSupportFragmentManager().popBackStack();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_place, new StartFragment());
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }

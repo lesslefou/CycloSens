@@ -1,5 +1,6 @@
 package com.example.cyclosens.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.example.cyclosens.R;
+import com.example.cyclosens.Welcome;
 import com.example.cyclosens.classes.Activity;
 import com.example.cyclosens.classes.Position;
 import com.google.android.gms.maps.model.LatLng;
@@ -72,6 +74,7 @@ public class ActivitiesFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 progressBar.setVisibility(View.GONE);
+                Log.i(TAG,"test : " + snapshot);
                 for (DataSnapshot data : snapshot.getChildren()) {
                     ArrayList<Position> location = new ArrayList<>();
                     String key = data.getKey();
@@ -79,8 +82,9 @@ public class ActivitiesFragment extends Fragment {
                     String date = data.child("date").getValue(String.class);
                     long duration = data.child("duration").getValue(long.class);
                     int bpmAv = data.child("bpmAv").getValue(int.class);
-                    int strenghAv = data.child("strenghAv").getValue(int.class);
+                    int strengthAv = data.child("strengthAv").getValue(int.class);
                     Float speedAv = data.child("speedAv").getValue(Float.class);
+                    Float distance = data.child("distance").getValue(Float.class);
 
                     for (DataSnapshot data2 : data.child("positionList").getChildren()) {
                         location.add(new Position(data2.child("lat").getValue(Double.class),data2.child("lng").getValue(Double.class)));
@@ -92,10 +96,8 @@ public class ActivitiesFragment extends Fragment {
                     final String json = gson.toJson(location);
                     Log.i(TAG,"Resultat = " + json);*/
 
-                    Log.d(TAG, "key :" + key );
                     if (key != null) {
-                        Log.d(TAG, "key : " + key + " name : "  + name + " date : " + date + " duration : " + duration);
-                        activities.add(new Activity(key, name, date, duration, bpmAv, strenghAv,speedAv,location));
+                        activities.add(new Activity(key, name, date, duration, bpmAv, strengthAv,speedAv,distance,location));
                     }
                 }
                 adapter.notifyDataSetChanged();
