@@ -439,9 +439,6 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
             totalDistance += getDistanceBetweenTwoLocation(i);
         }
 
-        /*float totalDistance = positionList
-                .stream()
-                .reduce(0, (subtotal, element) -> subtotal + getDistanceBetweenTwoLocation(element););*/
         return totalDistance;
     }
 
