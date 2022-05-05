@@ -67,7 +67,11 @@ public class Setting extends AppCompatActivity {
             binding.btnUnsubscribe.setOnClickListener(v -> showInformationSavedDialog());
         }
 
-
+        binding.forgotPassword.setOnClickListener(v -> {
+            finish();
+            Intent j = new Intent(Setting.this, ResetPassword.class);
+            startActivity(j);
+        });
     }
 
     protected void showInformationSavedDialog() {

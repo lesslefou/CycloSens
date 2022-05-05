@@ -60,7 +60,8 @@
     <string name="onGoing">On Going</string>
     <string name="title_activity_maps">MapsActivity</string>
     <string name="activity">Activity</string>
-    <string name="duration">Duration : </string>
+    <string name="duration">Duration : </string>>
+    <string name="distance">Distance : </string>
     <string name="bpm">BPM : </string>
     <string name="strengh">Strengh : </string>
     <string name="bpmAv">BPM Average : </string>
@@ -70,6 +71,12 @@
     <string name="validate">Validate</string>
     <string name="annulation">Annulation</string>
     <string name="delete_activity">Delete Activity</string>
+
+
+    <string name="lastTrackResume">Last Track Resume</string>
+    <string name="activitiesResume">Activities Resume</string>
+    <string name="distanceAv">Distance Average : </string>
+    <string name="distanceTotal">Distance Total : </string>
 
     <string name="device">Devices</string>
     <string name="cardiacDevice">Cardiac Device</string>
