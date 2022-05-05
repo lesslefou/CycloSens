@@ -21,6 +21,7 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import com.example.cyclosens.classes.Position;
 import com.example.cyclosens.classes.Activity;
@@ -39,6 +40,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.nio.ByteBuffer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -70,11 +72,11 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
     private LocationManager locationManager;
     private LocationListener locationListener;
 
-    private int nbOfBat = 1;
+    private int nbOfBat = 0;
     private int bpmValue = 0;
-    private int nbOfPowerCalculation = 1;
+    private int nbOfPowerCalculation = 0;
     private int powerValue = 0;
-    private int nbOfSpeedCalculation = 1;
+    private int nbOfSpeedCalculation = 0;
     private float speedValue = 0.0F;
 
     @SuppressLint("MissingPermission") //PERMISSION CHECKER EN AMONT
@@ -87,7 +89,11 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
 
         ghost = getIntent().getExtras().getBoolean("ghost");
         cardiacDevice = getIntent().getParcelableExtra("cardiac");
-        //pedalDevice = getIntent().getParcelableExtra("pedal");
+        pedalDevice = getIntent().getParcelableExtra("pedal");
+
+        if (ghost) {
+            binding.temps.setVisibility(View.VISIBLE);
+        }
 
         positionList = new ArrayList<>();
 
@@ -105,7 +111,7 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
         );
 
         connectToCardiacDevice();
-        //connectToPedalDevice();
+        connectToPedalDevice();
 
         timeBegin = Calendar.getInstance().getTime();
 
@@ -130,11 +136,15 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
             String key = createActivity(duration, strDate, positionList); //SAVE THE DATA ON THE DATABASE
 
             //GERER GESTION ERROR GetUID User
+
+            if (nbOfBat == 0) { nbOfBat = 1; }
+            if (nbOfSpeedCalculation == 0 ) { nbOfSpeedCalculation = 1; }
+            if (nbOfPowerCalculation == 0) { nbOfPowerCalculation = 1; }
             Activity activityOnGoing = new Activity(key, getString(R.string.activity),strDate,duration,bpmValue/nbOfBat,powerValue/nbOfPowerCalculation,speedValue/nbOfSpeedCalculation,positionList); //CHANGER STRENGH
 
             Log.i(TAG, "deconnection du device");
             bluetoothCardiacGatt.disconnect();
-            //bluetoothPedalGatt.disconnect();
+            bluetoothPedalGatt.disconnect();
             Intent i = new Intent(OnGoingActivity.this, ActivityInformation.class);
             i.putExtra("activity",activityOnGoing);
             startActivity(i);
@@ -146,6 +156,7 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
     private void updateLocation(Location location) {
         positionList.add(new Position(location.getLatitude(), location.getLongitude()));
         float speedActual = location.getSpeedAccuracyMetersPerSecond();
+        Log.i(TAG, "vitesse : " + speedActual);
         runOnUiThread(() -> binding.vitesse.setText(speedActual + " m/s"));
 
         speedValue += speedActual;
@@ -183,7 +194,7 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
 
             @Override
             public void onCharacteristicChanged(BluetoothGatt pGatt, BluetoothGattCharacteristic pCharacteristic) {
-                Log.i(TAG, "onCharacteristicChanged: " + Arrays.toString(pCharacteristic.getValue())); //look like an address
+                Log.i(TAG, "onCharacteristicChangedCardiac: " + Arrays.toString(pCharacteristic.getValue())); //look like an address
                 byte[] data = pCharacteristic.getValue(); //Tableau de byte contenant les données mis dans la charactéristic
                 characteristicChanged(data,"cardiac");
             }
@@ -191,9 +202,9 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
         bluetoothCardiacGatt.connect();
     }
 
-    //CHANGER
-    private static final UUID PEDAL_SERVICE_UUID = UUID.fromString("00001234-cc7a-482a-984a-7f2ed5b3e58f");
-    private static final UUID PEDAL_CHARACTERISTIC_NOTIFY_UUID =  UUID.fromString("0000dead-8e22-4541-9d4c-21edae82ed19");
+
+    private static final UUID PEDAL_SERVICE_UUID = UUID.fromString("00005678-cc7a-482a-984a-7f2ed5b3e58f");
+    private static final UUID PEDAL_CHARACTERISTIC_NOTIFY_UUID =  UUID.fromString("0000beef-8e22-4541-9d4c-21edae82ed19");
 
     private void connectToPedalDevice() {
         bluetoothPedalGatt = pedalDevice.connectGatt(this, true, new BluetoothGattCallback() {
@@ -201,8 +212,6 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
             public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
                 super.onConnectionStateChange(gatt, status, newState);
                 connectionStateChange(gatt,status,newState);
-
-                //Gérer la déconnexion du device au millieu de l'activité
             }
 
             @Override
@@ -214,7 +223,7 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
 
             @Override
             public void onCharacteristicChanged(BluetoothGatt pGatt, BluetoothGattCharacteristic pCharacteristic) {
-                Log.i(TAG, "onCharacteristicChanged: " + Arrays.toString(pCharacteristic.getValue())); //look like an address
+                Log.i(TAG, "onCharacteristicChangedPedal: " + Arrays.toString(pCharacteristic.getValue())); //look like an address
                 byte[] data = pCharacteristic.getValue(); //Tableau de byte contenant les données mis dans la charactéristic
                 characteristicChanged(data,"pedal");
             }
@@ -225,18 +234,27 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
     private void characteristicChanged(byte[] data, String device) {
         if (data != null && data.length > 0) {
             //Convert the data to have access to his value
-            final StringBuilder stringBuilder = new StringBuilder(data.length);
+            /*final StringBuilder stringBuilder = new StringBuilder(data.length);
             for(byte byteChar : data)
                 stringBuilder.append(String.format("%02X ", byteChar));
 
-            int actualValue = Integer.parseInt(stringBuilder.toString().trim());
+            Log.i(TAG, "stringbuilder" + stringBuilder);*/
 
+            //int actualValue = Integer.parseInt(stringBuilder.toString().trim());
+
+            int actualValue = 0;
+            for (int i = 0; i < data.length; i++) {
+                actualValue=actualValue<<8;
+                actualValue=actualValue|(data[i] & 0xFF);
+            }
+
+            int finalActualValue = actualValue;
             if (device.equals("pedal")) {
-                runOnUiThread(() -> binding.vitesse.setText(actualValue + " puissance moyenne "));
+                runOnUiThread(() -> binding.puissanceMoyenne.setText("Puissance :" + finalActualValue));
                 powerValue += actualValue;
                 nbOfPowerCalculation ++;
             } else {
-                runOnUiThread(() -> binding.bpm.setText(actualValue + " bpm"));
+                runOnUiThread(() -> binding.bpm.setText(finalActualValue + " bpm"));
                 bpmValue += actualValue;
                 nbOfBat ++;
             }
@@ -290,7 +308,8 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
             }
         } else {
             Log.w(TAG, "onServicesDiscovered received: " + status);
-            bluetoothCardiacGatt.disconnect();
+            gatt.disconnect(); //lequel mettre ???
+            //bluetoothCardiacGatt.disconnect();
             //bluetoothPedalGatt.disconnect();
         }
     }

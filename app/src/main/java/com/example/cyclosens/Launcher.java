@@ -92,13 +92,13 @@ public class Launcher extends AppCompatActivity {
 
             //5 secondes waits for searching devices before connexion
             Utils.delay(secs, () -> {
-                if (beltFound /* && pedalFound*/) {
+                if (beltFound && pedalFound) {
                     Log.i(TAG, "devices found");
                     if (bluetoothAdapter.isEnabled()) {
                         Intent i = new Intent(Launcher.this, OnGoingActivity.class);
                         i.putExtra("ghost",ghost);
                         i.putExtra("cardiac", cardiacDevice);
-                        //i.putExtra("pedal", pedalDevice);
+                        i.putExtra("pedal", pedalDevice);
                         startActivity(i);
                         finish();
                     }else {
@@ -156,14 +156,15 @@ public class Launcher extends AppCompatActivity {
                 Log.i(TAG, "cardiac device found");
                 cardiacDevice = result.getDevice();
                 beltFound = true;
-                bluetoothAdapter.getBluetoothLeScanner().stopScan(mScanCallback); //A SUPPRIMER
+                //bluetoothAdapter.getBluetoothLeScanner().stopScan(mScanCallback); //A SUPPRIMER
             } else if (result.getDevice().getAddress().equals(pedalAddress)) {
                 pedalDevice = result.getDevice();
+                Log.i(TAG, "pedal device found");
                 pedalFound = true;
             }
-            /*if (pedalFound && beltFound) {
+            if (pedalFound && beltFound) {
                 bluetoothAdapter.getBluetoothLeScanner().stopScan(mScanCallback);
-            }*/
+            }
         }
     };
 
@@ -183,12 +184,12 @@ public class Launcher extends AppCompatActivity {
                         Toast.makeText(Launcher.this, "You need to pair the cardiac belt before launching an activity", Toast.LENGTH_SHORT).show();
                         cpt[0] += 1;
                     }
-                    /*if (snapshot.child("pedal").child("address").exists()) {
-                        cardiacAddress = snapshot.child("pedal").child("address").getValue().toString();
+                    if (snapshot.child("pedal").child("address").exists()) {
+                        pedalAddress = snapshot.child("pedal").child("address").getValue().toString();
                     } else {
                         Toast.makeText(Launcher.this, "You need to pair the pedal before launching an activity", Toast.LENGTH_SHORT).show();
                         cpt[0] += 1;
-                    }*/
+                    }
                 }
 
                 @Override

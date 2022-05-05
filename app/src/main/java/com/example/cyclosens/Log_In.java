@@ -38,7 +38,7 @@ public class Log_In extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         mAuth = FirebaseAuth.getInstance();
-        //If the user didn't log out he will see this page, he will directly go on the welcome page
+        //If the user didn't log out he will not see this page, he will directly go on the welcome page
         if (mAuth.getCurrentUser() != null){
             Intent i = new Intent(Log_In.this, Welcome.class);
             i.putExtra("fragment", "start");
@@ -90,6 +90,7 @@ public class Log_In extends AppCompatActivity {
                     if (checkIfEmailConfirm()) {
                         Toast.makeText(Log_In.this, R.string.welcomeUser, Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(getApplicationContext(),Welcome.class));
+                        finish();
                     } else {
                         Toast.makeText(Log_In.this, R.string.emailConfirmation, Toast.LENGTH_SHORT).show();
                         binding.progressBar.setVisibility(View.GONE);

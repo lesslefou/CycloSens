@@ -16,7 +16,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.4"/>
+        app:layout_constraintVertical_bias="0.3"/>
 
     <Button
         android:id="@+id/btn_log"
@@ -24,29 +24,30 @@
         android:layout_height="wrap_content"
         android:text="@string/log_in"
         android:textSize="20dp"
-        android:layout_marginTop="15dp"
         android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:background="@color/black"
         android:textColor="@color/orange"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_sign"
-        app:layout_constraintTop_toBottomOf="@id/imageMain"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imageMain"
+        app:layout_constraintBottom_toTopOf="@id/btn_sign"/>
 
     <Button
         android:id="@+id/btn_sign"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/sign_up"
-        android:textSize="20dp"
-        android:layout_marginTop="15dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:background="@color/black"
+        android:text="@string/sign_up"
         android:textColor="@color/orange"
-        app:layout_constraintStart_toEndOf="@id/btn_log"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imageMain"/>
-
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_log" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

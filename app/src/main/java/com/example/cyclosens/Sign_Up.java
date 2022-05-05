@@ -149,7 +149,6 @@ public class Sign_Up extends AppCompatActivity {
                         mReference.setValue(user);
                         notificationDialog();
                         logout();
-                        startActivity(new Intent(Sign_Up.this, MainActivity.class));
                     } else {
                         Toast.makeText(Sign_Up.this, R.string.error + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         binding.progressBar.setVisibility(View.GONE);
@@ -165,7 +164,7 @@ public class Sign_Up extends AppCompatActivity {
 
 
     /**
-     * Allows the disconnection of the user on the application
+     * Allows the disconnection of the user on the application in order to force in to click on his email validation
      */
     public void logout() {
         FirebaseAuth.getInstance().signOut();

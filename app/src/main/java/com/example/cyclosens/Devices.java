@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import com.example.cyclosens.databinding.ActivityDevicesBinding;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,9 +35,6 @@ public class Devices extends AppCompatActivity {
         binding.addCardiacDevice.setOnClickListener(v-> goSearchDevice("cardiac"));
         binding.addPedalDevice.setOnClickListener(v-> goSearchDevice("pedal"));
 
-        binding.cardiacDeviceName.setOnClickListener(v-> goToInformation("cardiac"));
-        binding.pedalDeviceName.setOnClickListener(v-> goToInformation("pedal"));
-
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser != null) {
             String userId = firebaseUser.getUid();
@@ -51,7 +49,7 @@ public class Devices extends AppCompatActivity {
                     }
                     if (snapshot.child("pedal").child("name").exists()) {
                         pedalDevice = snapshot.child("pedal").child("name").getValue().toString();
-                        binding.cardiacDeviceName.setText(pedalDevice);
+                        binding.pedalDeviceName.setText(pedalDevice);
                     }
                 }
 
@@ -61,6 +59,9 @@ public class Devices extends AppCompatActivity {
                 }
             });
         }
+
+        //Go back on the previous page and close this activity
+        binding.btnBack.setOnClickListener((View.OnClickListener) v -> finish());
     }
 
     private void goSearchDevice(String type){
@@ -69,9 +70,4 @@ public class Devices extends AppCompatActivity {
         startActivity(i);
     }
 
-    private void goToInformation(String type){
-        Intent i = new Intent(Devices.this, DeviceInformation.class);
-        i.putExtra("device",type);
-        startActivity(i);
-    }
 }
