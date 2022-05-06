@@ -16,8 +16,8 @@ import java.util.ArrayList;
 
 public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.ViewHolder>{
     private static final String TAG = ActivitiesAdapter.class.getSimpleName(); //POUR LES LOG
-    private ArrayList<Activity> activities;
-    private int itemResource;
+    private final ArrayList<Activity> activities;
+    private final int itemResource;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView nameActivity;

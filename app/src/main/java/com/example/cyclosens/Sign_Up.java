@@ -36,15 +36,9 @@ public class Sign_Up extends AppCompatActivity {
     private ActivitySignUpBinding binding;
     private static final String TAG = Sign_Up.class.getSimpleName(); //POUR LES LOG
 
-    boolean validPassword = false;
-    boolean hasNumbers = false;
-    boolean hasLowerCase = false;
-    boolean hasUpperCase = false;
-
-    FirebaseAuth mAuth;
-    User user;
-    FirebaseDatabase mDatabase;
-    DatabaseReference mReference;
+    private FirebaseAuth mAuth;
+    private User user;
+    private DatabaseReference mReference;
 
     public static final String NOTIFICATION_CHANNEL_ID = "CycloSens";
 
@@ -55,7 +49,7 @@ public class Sign_Up extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance();
+        FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         mReference = mDatabase.getReference();
 
         binding.btnSign.setOnClickListener(v -> registerUser());
@@ -93,10 +87,10 @@ public class Sign_Up extends AppCompatActivity {
         }
 
         /*Check if the user respects the password constraints*/
-        validPassword = false;
-        hasNumbers = false;
-        hasLowerCase = false;
-        hasUpperCase = false;
+        boolean validPassword = false;
+        boolean hasNumbers = false;
+        boolean hasLowerCase = false;
+        boolean hasUpperCase = false;
         for (int i = 0; i < password.length(); i++) {
             if (Character.isDigit(password.charAt(i))) {
                 hasNumbers = true;

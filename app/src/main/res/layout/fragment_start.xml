@@ -103,7 +103,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_toEndOf="@id/duration"
                     android:textSize="20sp" />
-
+                
             </RelativeLayout>
         </RelativeLayout>
 

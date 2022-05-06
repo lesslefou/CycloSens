@@ -44,7 +44,7 @@ public class AboutUs extends FragmentActivity implements OnMapReadyCallback {
         //Set the location of Isen Toulon Campus on a map
         mMap = googleMap;
         LatLng isenToulon = new LatLng(43.120562,5.939687);
-        mMap.addMarker(new MarkerOptions().position(isenToulon).title("Isen Toulon"));
+        mMap.addMarker(new MarkerOptions().position(isenToulon).title(getString(R.string.schoolName)));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(isenToulon, 13f));
     }
 }

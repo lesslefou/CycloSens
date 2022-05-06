@@ -68,8 +68,7 @@ public class ActivitiesFragment extends Fragment {
     }
 
     private void getActivities(String userId) {
-        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("user").child(userId).child("Activities");
-        Query post = mRef;
+        Query post = FirebaseDatabase.getInstance().getReference("user").child(userId).child("Activities");
         post.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

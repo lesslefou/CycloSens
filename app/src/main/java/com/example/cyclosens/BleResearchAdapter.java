@@ -68,9 +68,7 @@ public class BleResearchAdapter extends RecyclerView.Adapter<BleResearchAdapter.
 
         holder.uuid.setText(device.getAddress());
 
-        holder.itemLayout.setOnClickListener(v-> {
-            clickListener.onItemClick(device);
-        });
+        holder.itemLayout.setOnClickListener(v-> clickListener.onItemClick(device));
 
     }
 

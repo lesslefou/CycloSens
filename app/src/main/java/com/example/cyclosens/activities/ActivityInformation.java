@@ -70,7 +70,7 @@ public class ActivityInformation extends AppCompatActivity implements OnMapReady
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(@NonNull GoogleMap googleMap) {
 
         ArrayList<Position> locationDouble = activity.getPositionList();
         ArrayList<LatLng> location = new ArrayList<>();

@@ -6,26 +6,24 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toolbar;
 
 import com.example.cyclosens.activities.ActivitiesFragment;
-import com.example.cyclosens.activities.ActivityInformation;
 import com.example.cyclosens.databinding.ActivityWelcomeBinding;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class Welcome extends AppCompatActivity {
-    private ActivityWelcomeBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityWelcomeBinding.inflate(getLayoutInflater());
+        ActivityWelcomeBinding binding = ActivityWelcomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         binding.btnLaunch.setOnClickListener(view -> {
@@ -49,8 +47,8 @@ public class Welcome extends AppCompatActivity {
 
     /**
      * Display the fragment that the user had selected with the button
-     * @param view
      */
+    @SuppressLint("NonConstantResourceId")
     public void onSelectFragment(View view) {
         Fragment newFragment = new Fragment();
 
@@ -80,9 +78,8 @@ public class Welcome extends AppCompatActivity {
 
     /**
      * Redirects the user to the good activity
-     * @param item
-     * @return
      */
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {

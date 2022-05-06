@@ -51,13 +51,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final String TAG = OnGoingActivity.class.getSimpleName();
     private static final String KEY_LOCATION = "location";
-    private static final int GATT_INTERNAL_ERROR = 129;
     private ActivityOnGoingBinding binding;
 
     private boolean ghost;
@@ -81,6 +82,9 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
     private int nbOfSpeedCalculation = 0;
     private float speedValue = 0.0F;
 
+    private int cptBpm = 0;
+    private int cptStrength=0;
+
     @SuppressLint("MissingPermission") //PERMISSION CHECKER EN AMONT
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -93,17 +97,16 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
         cardiacDevice = getIntent().getParcelableExtra("cardiac");
         pedalDevice = getIntent().getParcelableExtra("pedal");
 
-        if (ghost) {
-            binding.temps.setVisibility(View.VISIBLE);
-        }
+        if (ghost) { binding.temps.setVisibility(View.VISIBLE); }
 
         positionList = new ArrayList<>();
 
+        //A SUPPRIMER
         positionList.add(new Position(43.117030,5.932195));
         positionList.add(new Position(43.118030,5.933195));
         positionList.add(new Position(43.119030,5.934195));
 
-        locationListener = location -> updateLocation(location);
+        locationListener = this::updateLocation;
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
@@ -132,7 +135,7 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
             long duration = (timeEnd.getTime() - timeBegin.getTime()) / (60 * 1000) % 60; //minute
 
             Date date = Calendar.getInstance().getTime();
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd",new Locale("US"));
             String strDate = dateFormat.format(date);
 
             String key = createActivity(duration, strDate, positionList); //SAVE THE DATA ON THE DATABASE
@@ -154,17 +157,17 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
         });
     }
 
+    @SuppressLint("SetTextI18n")
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void updateLocation(Location location) {
         positionList.add(new Position(location.getLatitude(), location.getLongitude()));
         float speedActual = location.getSpeedAccuracyMetersPerSecond();
         Log.i(TAG, "vitesse : " + speedActual);
-        runOnUiThread(() -> binding.vitesse.setText(speedActual + " m/s"));
+        runOnUiThread(() -> binding.vitesse.setText(speedActual + "m/s"));
 
         speedValue += speedActual;
         nbOfSpeedCalculation ++;
     }
-
 
     private static final UUID CARDIAC_SERVICE_UUID = UUID.fromString("00001234-cc7a-482a-984a-7f2ed5b3e58f");
     private static final UUID CARDIAC_CHARACTERISTIC_NOTIFY_UUID =  UUID.fromString("0000dead-8e22-4541-9d4c-21edae82ed19");
@@ -225,7 +228,7 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
 
             @Override
             public void onCharacteristicChanged(BluetoothGatt pGatt, BluetoothGattCharacteristic pCharacteristic) {
-                Log.i(TAG, "onCharacteristicChangedPedal: " + Arrays.toString(pCharacteristic.getValue())); //look like an address
+                Log.i(TAG, "onCharacteristicChangedPedal: " + Arrays.toString(pCharacteristic.getValue()));
                 byte[] data = pCharacteristic.getValue(); //Tableau de byte contenant les données mis dans la charactéristic
                 characteristicChanged(data,"pedal");
             }
@@ -233,38 +236,51 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
         bluetoothPedalGatt.connect();
     }
 
+    @SuppressLint("SetTextI18n")
     private void characteristicChanged(byte[] data, String device) {
         if (data != null && data.length > 0) {
             //Convert the data to have access to his value
-            /*final StringBuilder stringBuilder = new StringBuilder(data.length);
-            for(byte byteChar : data)
-                stringBuilder.append(String.format("%02X ", byteChar));
-
-            Log.i(TAG, "stringbuilder" + stringBuilder);*/
-
-            //int actualValue = Integer.parseInt(stringBuilder.toString().trim());
-
             int actualValue = 0;
-            for (int i = 0; i < data.length; i++) {
-                actualValue=actualValue<<8;
-                actualValue=actualValue|(data[i] & 0xFF);
+            for (byte datum : data) {
+                actualValue = actualValue << 8;
+                actualValue = actualValue | (datum & 0xFF);
             }
 
             int finalActualValue = actualValue;
             if (device.equals("pedal")) {
                 runOnUiThread(() -> binding.puissanceMoyenne.setText("Puissance :" + finalActualValue));
+
+                //on vient checker si la valeur mesurée est plus petite que l'ancienne
+                if (actualValue < strengthValue) { cptStrength ++; }
+
                 strengthValue += actualValue;
                 nbOfStrengthCalculation ++;
             } else {
                 runOnUiThread(() -> binding.bpm.setText(finalActualValue + " bpm"));
+
+                //on vient checker si la valeur mesurée est plus petite que l'ancienne
+                if (actualValue < bpmValue) { cptBpm ++; }
+
                 bpmValue += actualValue;
                 nbOfBat ++;
             }
         }
 
+        //Si le cyclist à activé la demande d'encouragement
+        if (ghost) {
+            //si les valeurs mesurées descendent plus de 5x d'affilés alors message d'encouragement
+            if (cptStrength == 5 || cptBpm == 5) {
+                runOnUiThread(() -> binding.temps.setText(getString(R.string.negEncouragement)));
+                cptBpm = 0;
+                cptStrength = 0;
+            } else {
+                runOnUiThread(() -> binding.temps.setText(getString(R.string.posEncouragement)));
+            }
+        }
+
         //Si on veut ecrire quelque chose en retour dans la charac
-        //pCharacteristic.setValue(lToSend);
-        //pGatt.writeCharacteristic(pCharacteristic);
+        /*pCharacteristic.setValue(lToSend);
+        pGatt.writeCharacteristic(pCharacteristic);*/
     }
 
     private void connectionStateChange(BluetoothGatt gatt, int status, int newState) {
@@ -310,9 +326,7 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
             }
         } else {
             Log.w(TAG, "onServicesDiscovered received: " + status);
-            gatt.disconnect(); //lequel mettre ???
-            //bluetoothCardiacGatt.disconnect();
-            //bluetoothPedalGatt.disconnect();
+            gatt.disconnect();
         }
     }
 
@@ -392,11 +406,11 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
             @Override
             public void onDataChange(@NonNull DataSnapshot data) {
                 if (cpt[0] == 0 ) {
-                    nbActivities[0] = Integer.parseInt(data.child("nbActivities").getValue().toString());
-                    totalDistance[0] = Float.parseFloat(data.child("totalDistance").getValue().toString());
-                    avDistance[0] = Float.parseFloat(data.child("avDistance").getValue().toString());
-                    avBPM[0] = Integer.parseInt(data.child("avBPM").getValue().toString());
-                    avStrength[0] = Integer.parseInt(data.child("avStrength").getValue().toString());
+                    nbActivities[0] = Integer.parseInt(Objects.requireNonNull(data.child("nbActivities").getValue()).toString());
+                    totalDistance[0] = Float.parseFloat(Objects.requireNonNull(data.child("totalDistance").getValue()).toString());
+                    avDistance[0] = Float.parseFloat(Objects.requireNonNull(data.child("avDistance").getValue()).toString());
+                    avBPM[0] = Integer.parseInt(Objects.requireNonNull(data.child("avBPM").getValue()).toString());
+                    avStrength[0] = Integer.parseInt(Objects.requireNonNull(data.child("avStrength").getValue()).toString());
 
                     cpt[0]++;
                 }

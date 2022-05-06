@@ -24,6 +24,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Objects;
+
 public class Setting extends AppCompatActivity {
     private ActivitySettingBinding binding;
 
@@ -46,9 +48,9 @@ public class Setting extends AppCompatActivity {
             mReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    String name = dataSnapshot.child("name").getValue().toString();
-                    String surname = dataSnapshot.child("surname").getValue().toString();
-                    String email = dataSnapshot.child("email").getValue().toString();
+                    String name = Objects.requireNonNull(dataSnapshot.child("name").getValue()).toString();
+                    String surname = Objects.requireNonNull(dataSnapshot.child("surname").getValue()).toString();
+                    String email = Objects.requireNonNull(dataSnapshot.child("email").getValue()).toString();
                     binding.editName.setText(name);
                     binding.editSurname.setText(surname);
                     binding.editEmail.setText(email);

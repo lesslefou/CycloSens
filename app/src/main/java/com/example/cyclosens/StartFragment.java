@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -34,16 +35,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 @SuppressLint("SetTextI18n")
 public class StartFragment extends Fragment {
     private static final String TAG = StartFragment.class.getSimpleName(); //POUR LES LOG
-    DatabaseReference mReference;
-    String userId;
-    TextView distanceLastTrackTV, durationLastTrackTV, totalDistanceTV, avDistanceTV, avBPMTV, avStrengthTV, nbActivityTV;
-    String durationLastTrack,distanceLastTrack, totalDistance, avDistance, avBPM, avStrength,nbActivity;
-    ArrayList<Position> positionsLastTrack;
+    private ArrayList<Position> positionsLastTrack;
     int cpt = 0;
 
     @Override
@@ -62,12 +60,12 @@ public class StartFragment extends Fragment {
         //Set all the information of the user from the database on the screen
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser != null) {
-            userId = firebaseUser.getUid();
+            String userId = firebaseUser.getUid();
 
             ProgressBar progressBar = v.findViewById(R.id.progressBar);
             progressBar.setVisibility(View.GONE);
 
-            mReference = FirebaseDatabase.getInstance().getReference("user").child(userId);
+            DatabaseReference mReference = FirebaseDatabase.getInstance().getReference("user").child(userId);
             mReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -95,17 +93,17 @@ public class StartFragment extends Fragment {
     private void initializeActivitiesResume(DataSnapshot data, View v) {
         Log.i(TAG,"initializeActivitiesResume");
 
-        nbActivity = data.child("nbActivities").getValue().toString();
-        totalDistance = data.child("totalDistance").getValue().toString();
-        avDistance = data.child("avDistance").getValue().toString();
-        avBPM = data.child("avBPM").getValue().toString();
-        avStrength = data.child("avStrength").getValue().toString();
+        String nbActivity = Objects.requireNonNull(data.child("nbActivities").getValue()).toString();
+        String totalDistance = Objects.requireNonNull(data.child("totalDistance").getValue()).toString();
+        String avDistance = Objects.requireNonNull(data.child("avDistance").getValue()).toString();
+        String avBPM = Objects.requireNonNull(data.child("avBPM").getValue()).toString();
+        String avStrength = Objects.requireNonNull(data.child("avStrength").getValue()).toString();
 
-        nbActivityTV = v.findViewById(R.id.edit_nb_activities);
-        totalDistanceTV = v.findViewById(R.id.edit_distance_total);
-        avDistanceTV = v.findViewById(R.id.edit_distance_av);
-        avBPMTV = v.findViewById(R.id.edit_bpm_av);
-        avStrengthTV = v.findViewById(R.id.edit_strength_av);
+        TextView nbActivityTV = v.findViewById(R.id.edit_nb_activities);
+        TextView totalDistanceTV = v.findViewById(R.id.edit_distance_total);
+        TextView avDistanceTV = v.findViewById(R.id.edit_distance_av);
+        TextView avBPMTV = v.findViewById(R.id.edit_bpm_av);
+        TextView avStrengthTV = v.findViewById(R.id.edit_strength_av);
 
         nbActivityTV.setText(nbActivity);
         totalDistanceTV.setText("" + totalDistance + "m");
@@ -116,11 +114,11 @@ public class StartFragment extends Fragment {
 
     private void initializeLastTrackResume(DataSnapshot data, View v) {
         Log.i(TAG,"initializeLastTrackResume");
-        distanceLastTrack = data.child("distance").getValue().toString();
-        durationLastTrack = data.child("duration").getValue().toString();
+        String distanceLastTrack = Objects.requireNonNull(data.child("distance").getValue()).toString();
+        String durationLastTrack = Objects.requireNonNull(data.child("duration").getValue()).toString();
 
-        distanceLastTrackTV = v.findViewById(R.id.edit_distance);
-        durationLastTrackTV = v.findViewById(R.id.edit_duration);
+        TextView distanceLastTrackTV = v.findViewById(R.id.edit_distance);
+        TextView durationLastTrackTV = v.findViewById(R.id.edit_duration);
 
         distanceLastTrackTV.setText("" + distanceLastTrack + "m");
         durationLastTrackTV.setText("" + durationLastTrack + "s");

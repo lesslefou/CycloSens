@@ -28,10 +28,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Objects;
+
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class Launcher extends AppCompatActivity {
     private static final String TAG = Launcher.class.getSimpleName(); //POUR LES LOG
-    private ActivityLauncherBinding binding;
     private boolean ghost,gps,cardiac,pedal;
     private String cardiacAddress, pedalAddress;
     private BluetoothDevice cardiacDevice, pedalDevice;
@@ -40,13 +41,11 @@ public class Launcher extends AppCompatActivity {
     private boolean locationPermissionGranted;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 2;
     private static final int REQUEST_CODE_ENABLE_BLUETOOTH = 1;
-    private int secs = 5; // Delay in seconds
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityLauncherBinding.inflate(getLayoutInflater());
+        com.example.cyclosens.databinding.ActivityLauncherBinding binding = ActivityLauncherBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         beltFound = false;
@@ -85,12 +84,12 @@ public class Launcher extends AppCompatActivity {
         }
     }
 
-
-
     private void checkIfOnGoingPossible() {
         if (locationPermissionGranted && askBluetoothPermission() ) {
 
             //5 secondes waits for searching devices before connexion
+            // Delay in seconds
+            int secs = 5;
             Utils.delay(secs, () -> {
                 if (beltFound && pedalFound) {
                     Log.i(TAG, "devices found");
@@ -107,12 +106,12 @@ public class Launcher extends AppCompatActivity {
                 }
                 else {
                     bluetoothAdapter.getBluetoothLeScanner().stopScan(mScanCallback);
-                    Toast.makeText(Launcher.this,"One or more sensors not found", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Launcher.this, getString(R.string.sensorsNotFound), Toast.LENGTH_SHORT).show();
                 }
 
             });
         } else {
-            Toast.makeText(Launcher.this,"Pairing probleme", Toast.LENGTH_SHORT).show();
+            Toast.makeText(Launcher.this, R.string.pairingProblem, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -127,20 +126,20 @@ public class Launcher extends AppCompatActivity {
         bluetoothAdapter = bluetoothManager.getAdapter();
         if (bluetoothAdapter == null)
         {
-            Toast.makeText(getApplicationContext(), "Bluetooth non supporté !", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.bleNotSupported), Toast.LENGTH_SHORT).show();
             return false;
         }
         else
         {
             if (!bluetoothAdapter.isEnabled())
             {
-                Toast.makeText(getApplicationContext(), "Bluetooth non activé !", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.bleNotSupported), Toast.LENGTH_SHORT).show();
                 Intent activeBlueTooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(activeBlueTooth, REQUEST_CODE_ENABLE_BLUETOOTH);
             }
             else
             {
-                Toast.makeText(getApplicationContext(), "Bluetooth activé", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.bleEnabled), Toast.LENGTH_SHORT).show();
                 bluetoothAdapter.getBluetoothLeScanner().startScan(mScanCallback);
             }
             return true;
@@ -156,7 +155,6 @@ public class Launcher extends AppCompatActivity {
                 Log.i(TAG, "cardiac device found");
                 cardiacDevice = result.getDevice();
                 beltFound = true;
-                //bluetoothAdapter.getBluetoothLeScanner().stopScan(mScanCallback); //A SUPPRIMER
             } else if (result.getDevice().getAddress().equals(pedalAddress)) {
                 pedalDevice = result.getDevice();
                 Log.i(TAG, "pedal device found");
@@ -179,15 +177,15 @@ public class Launcher extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.child("cardiac").child("address").exists()) {
-                        cardiacAddress = snapshot.child("cardiac").child("address").getValue().toString();
+                        cardiacAddress = Objects.requireNonNull(snapshot.child("cardiac").child("address").getValue()).toString();
                     } else {
-                        Toast.makeText(Launcher.this, "You need to pair the cardiac belt before launching an activity", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Launcher.this, getString(R.string.pairingBeltNecessary), Toast.LENGTH_SHORT).show();
                         cpt[0] += 1;
                     }
                     if (snapshot.child("pedal").child("address").exists()) {
-                        pedalAddress = snapshot.child("pedal").child("address").getValue().toString();
+                        pedalAddress = Objects.requireNonNull(snapshot.child("pedal").child("address").getValue()).toString();
                     } else {
-                        Toast.makeText(Launcher.this, "You need to pair the pedal before launching an activity", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Launcher.this, getString(R.string.pairingPedalNecessary), Toast.LENGTH_SHORT).show();
                         cpt[0] += 1;
                     }
                 }
@@ -198,10 +196,6 @@ public class Launcher extends AppCompatActivity {
                 }
             });
         }
-        if (cpt[0] > 0) {
-            return false;
-        } else {
-            return true;
-        }
+        return cpt[0] <= 0;
     }
 }

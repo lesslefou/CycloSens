@@ -9,13 +9,12 @@ import com.example.cyclosens.databinding.ActivityMainBinding;
 
 public class MainActivity extends Activity  {
     private static final String TAG = MainActivity.class.getSimpleName(); //POUR LES LOG
-    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
 
         View view = binding.getRoot();
         setContentView(view);

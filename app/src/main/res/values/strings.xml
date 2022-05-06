@@ -14,7 +14,7 @@
     <string name="emailConfirmation">You need to confirm your email before log in</string>
 
     <string name="resetPage">Reset Password</string>
-    <string name="resetbyEmail">Send My New Password</string>
+    <string name="resetByEmail">Send My New Password</string>
     <string name="resetEmail">Password send to your email</string>
 
     <string name="welcome">Perfect ! You are now register on our app</string>
@@ -71,6 +71,9 @@
     <string name="validate">Validate</string>
     <string name="annulation">Annulation</string>
     <string name="delete_activity">Delete Activity</string>
+    <string name="startEncouragement">Let\'s Go !</string>
+    <string name="posEncouragement">Good !</string>
+    <string name="negEncouragement">Come On !</string>
 
     <string name="nbActivities">Nb Activities : </string>
     <string name="lastTrackSummary">Last Track Summary</string>
@@ -85,4 +88,13 @@
     <string name="addPedalDevice">Add Pedal Device</string>
 
     <string name="deviceUnknown">Device Unknown</string>
+    <string name="schoolName">Isen Toulon</string>
+
+    <string name="bleEnabled"> Bluetooth Enabled</string>
+    <string name="bleDisabled"> Bluetooth Disabled</string>
+    <string name="bleNotSupported">Bluetooth not supported </string>
+    <string name="sensorsNotFound">One or more sensors not found</string>
+    <string name="pairingProblem">Pairing problem</string>
+    <string name="pairingBeltNecessary">You need to pair the cardiac belt before launching an activity</string>
+    <string name="pairingPedalNecessary">You need to pair the pedal before launching an activity</string>
 </resources>

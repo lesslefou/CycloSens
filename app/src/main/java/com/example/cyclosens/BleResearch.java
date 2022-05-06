@@ -40,8 +40,6 @@ import java.util.Set;
 public class BleResearch extends AppCompatActivity {
     private static final String TAG = BleResearch.class.getSimpleName(); //POUR LES LOG
     private static final int REQUEST_CODE_ENABLE_BLUETOOTH = 1;
-    private ActivityBleResearchBinding binding;
-    private RecyclerView monRecycler;
     private BleResearchAdapter bleResearchAdapter;
     private ArrayList<BluetoothDevice> bleDevices;
     private BluetoothAdapter bluetoothAdapter = null;
@@ -50,13 +48,13 @@ public class BleResearch extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityBleResearchBinding.inflate(getLayoutInflater());
+        com.example.cyclosens.databinding.ActivityBleResearchBinding binding = ActivityBleResearchBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         String device = getIntent().getExtras().getString("device");
         bleDevices = new ArrayList<BluetoothDevice>();
 
-        monRecycler = binding.recycleViewBle;
+        RecyclerView monRecycler = binding.recycleViewBle;
         bleResearchAdapter = new BleResearchAdapter(bleDevices);
         monRecycler.setAdapter(bleResearchAdapter);
         monRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -97,15 +95,9 @@ public class BleResearch extends AppCompatActivity {
             bleResearchAdapter.notifyDataSetChanged();
         }
 
-
         @Override
         public void onScanFailed(int errorCode) {
             Log.i(TAG, "error");
-        }
-
-        @Override
-        public void onBatchScanResults(List<ScanResult> results) {
-            Log.i(TAG, "Batch scan results: ${results.size}");
         }
     };
 
@@ -130,12 +122,12 @@ public class BleResearch extends AppCompatActivity {
             return;
         if (resultCode == RESULT_OK)
         {
-            Toast.makeText(getApplicationContext(), "Bluetooth activé", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.bleEnabled), Toast.LENGTH_SHORT).show();
             startLeScanBLEWithPermission();
         }
         else
         {
-            Toast.makeText(getApplicationContext(), "Bluetooth non activé !", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.bleDisabled), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -147,19 +139,19 @@ public class BleResearch extends AppCompatActivity {
         bluetoothAdapter = bluetoothManager.getAdapter();
         if (bluetoothAdapter == null)
         {
-            Toast.makeText(getApplicationContext(), "Bluetooth non supporté !", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.bleNotSupported), Toast.LENGTH_SHORT).show();
         }
         else
         {
             if (!bluetoothAdapter.isEnabled())
             {
-                Toast.makeText(getApplicationContext(), "Bluetooth non activé !", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.bleDisabled), Toast.LENGTH_SHORT).show();
                 Intent activeBlueTooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(activeBlueTooth, REQUEST_CODE_ENABLE_BLUETOOTH);
             }
             else
             {
-                Toast.makeText(getApplicationContext(), "Bluetooth activé", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.bleEnabled), Toast.LENGTH_SHORT).show();
                 startLeScanBLEWithPermission();
             }
         }

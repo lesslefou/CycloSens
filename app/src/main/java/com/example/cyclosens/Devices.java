@@ -18,6 +18,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Objects;
+
 public class Devices extends AppCompatActivity {
     private ActivityDevicesBinding binding;
     private String cardiacDevice;
@@ -43,12 +45,12 @@ public class Devices extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.child("cardiac").child("name").exists()) {
-                        cardiacDevice = snapshot.child("cardiac").child("name").getValue().toString();
+                        cardiacDevice = Objects.requireNonNull(snapshot.child("cardiac").child("name").getValue()).toString();
                         Log.i("device", cardiacDevice);
                         binding.cardiacDeviceName.setText(cardiacDevice);
                     }
                     if (snapshot.child("pedal").child("name").exists()) {
-                        pedalDevice = snapshot.child("pedal").child("name").getValue().toString();
+                        pedalDevice = Objects.requireNonNull(snapshot.child("pedal").child("name").getValue()).toString();
                         binding.pedalDeviceName.setText(pedalDevice);
                     }
                 }

@@ -12,7 +12,8 @@
         android:layout_height="wrap_content"
         android:text="@string/onGoing"
         android:textStyle="bold"
-        android:textSize="30dp"
+        android:textSize="30sp"
+        android:textColor="@color/orange"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -22,7 +23,7 @@
         android:id="@+id/bpm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="30dp"
+        android:textSize="30sp"
         app:layout_constraintEnd_toStartOf="@id/heart"
         app:layout_constraintTop_toBottomOf="@id/titre"
         app:layout_constraintBottom_toTopOf="@id/puissanceMoyenne"/>
@@ -40,27 +41,25 @@
         android:id="@+id/temps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="+ 2 sec"
-        android:textSize="40dp"
+        android:text="@string/startEncouragement"
+        android:textSize="40sp"
         android:visibility="invisible"
         android:layout_marginStart="20dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/bpm"
-        />
+        app:layout_constraintTop_toTopOf="@id/bpm"/>
 
 
     <TextView
         android:id="@+id/puissanceMoyenne"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Puissance : 40"
         android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titre"
         app:layout_constraintVertical_bias="0.2"
         app:layout_constraintBottom_toBottomOf="parent"
-        />
+        tools:text="Puissance : 0"/>
 
     <fragment
         android:layout_width="match_parent"
@@ -78,7 +77,7 @@
         android:id="@+id/vitesse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="15m/s"
+        tools:text="0m/s"
         android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

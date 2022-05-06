@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:text="@string/start"
         android:textStyle="bold"
-        android:textSize="30dp"
+        android:textSize="30sp"
         android:textColor="@color/orange"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/gpsSwitch"
@@ -27,7 +27,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/cardiacSwitch"
         android:layout_marginStart="100dp"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     <TextView
         android:id="@+id/textGps"
@@ -57,7 +58,8 @@
         app:layout_constraintTop_toBottomOf="@id/gpsSwitch"
         app:layout_constraintBottom_toTopOf="@id/pedalSwitch"
         android:layout_marginStart="100dp"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     <TextView
         android:id="@+id/textCardiac"
@@ -86,7 +88,8 @@
         app:layout_constraintTop_toBottomOf="@id/cardiacSwitch"
         app:layout_constraintBottom_toTopOf="@id/ghostSwitch"
         android:layout_marginStart="100dp"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="UseSwitchCompatOrMaterialXml"/>
 
     <TextView
         android:id="@+id/textPedal"
@@ -115,7 +118,8 @@
         app:layout_constraintTop_toBottomOf="@id/pedalSwitch"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginStart="100dp"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="UseSwitchCompatOrMaterialXml"/>
 
     <TextView
         android:id="@+id/textGhost"
