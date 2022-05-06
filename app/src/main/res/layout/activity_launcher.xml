@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".Launcher">
 
+    <ImageView
+        android:id="@+id/backBtn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/back"
+        app:layout_constraintTop_toTopOf="@id/title"
+        app:layout_constraintBottom_toBottomOf="@id/title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/title"/>
+
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"

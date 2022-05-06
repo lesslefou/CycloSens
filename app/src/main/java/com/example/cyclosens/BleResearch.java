@@ -80,6 +80,7 @@ public class BleResearch extends AppCompatActivity {
             });
         }
 
+        binding.btnBack.setOnClickListener(v-> finish());
     }
 
     private final ScanCallback mScanCallback = new ScanCallback() {

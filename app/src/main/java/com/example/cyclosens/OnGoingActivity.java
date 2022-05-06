@@ -140,8 +140,6 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
 
             String key = createActivity(duration, strDate, positionList); //SAVE THE DATA ON THE DATABASE
 
-            //GERER GESTION ERROR GetUID User
-
             if (nbOfBat == 0) { nbOfBat = 1; }
             if (nbOfSpeedCalculation == 0 ) { nbOfSpeedCalculation = 1; }
             if (nbOfStrengthCalculation == 0) { nbOfStrengthCalculation = 1; }

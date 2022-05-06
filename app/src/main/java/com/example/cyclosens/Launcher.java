@@ -68,6 +68,8 @@ public class Launcher extends AppCompatActivity {
                 }
             });
         }
+
+        binding.backBtn.setOnClickListener(view -> finish());
     }
 
     /**

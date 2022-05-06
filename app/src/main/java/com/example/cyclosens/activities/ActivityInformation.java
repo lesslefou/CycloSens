@@ -66,6 +66,7 @@ public class ActivityInformation extends AppCompatActivity implements OnMapReady
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        binding.backBtn.setOnClickListener(view -> finish());
         binding.btnDelete.setOnClickListener(view -> deleteActivity());
     }
 

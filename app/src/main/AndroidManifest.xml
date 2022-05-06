@@ -23,6 +23,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CycloSens">
         <activity
+            android:name=".ItinerariesAdapter"
+            android:exported="false" />
+        <activity
             android:name=".BleResearch"
             android:exported="false" />
         <!--

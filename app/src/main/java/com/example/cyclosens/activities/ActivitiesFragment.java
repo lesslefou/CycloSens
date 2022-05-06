@@ -113,7 +113,7 @@ public class ActivitiesFragment extends Fragment {
     //Initialise the recyclerView
     private  void initRecycleView(View v){
         Log.d(TAG,"initRecycleView: init recyclerview");
-        RecyclerView recyclerView = v.findViewById(R.id.gameRecycler);
+        RecyclerView recyclerView = v.findViewById(R.id.activitiesRecycler);
         adapter = new ActivitiesAdapter(R.layout.activity_activities_adapter,activities);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
