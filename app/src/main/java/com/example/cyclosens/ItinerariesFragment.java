@@ -1,7 +1,9 @@
 package com.example.cyclosens;
 
+import android.location.Location;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,13 +12,24 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.example.cyclosens.activities.ActivitiesAdapter;
 import com.example.cyclosens.classes.Activity;
 import com.example.cyclosens.classes.Itinerary;
 import com.example.cyclosens.classes.Position;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class ItinerariesFragment extends Fragment {
 
@@ -34,27 +47,93 @@ public class ItinerariesFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_itineraries, container, false);
 
+        getAvSpeedUser(v);
+        return v;
+    }
+
+    private void getAvSpeedUser(View v) {
+        final int[] cpt = {0};
+        final Float[] avSpeed = new Float[1];
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (firebaseUser != null) {
+            String userId = firebaseUser.getUid();
+            DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("user").child(userId).child("ResumeActivities");
+            mRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot data) {
+                    if (cpt[0] == 0 ) {
+                        avSpeed[0] = Float.parseFloat(Objects.requireNonNull(data.child("avSpeed").getValue()).toString());
+
+                        creationBddItineraries(avSpeed[0], v);
+
+                        cpt[0]++;
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {  }
+            });
+        }
+    }
+
+    private void creationBddItineraries(Float speedUser, View v) {
+        int distanceParcours = 0;
+        itineraries = new ArrayList<>();
+
         ArrayList<Position> positions = new ArrayList<>();
         positions.add(new Position(43.117030,5.932195));
         positions.add(new Position(43.118030,5.933195));
         positions.add(new Position(43.119030,5.934195));
 
+        distanceParcours = getDistanceFromItineraries(positions);
+        itineraries.add(new Itinerary((int) (distanceParcours/speedUser), distanceParcours, positions));
 
-        itineraries = new ArrayList<>();
-        itineraries.add(new Itinerary(30, 1500F, positions));
-        itineraries.add(new Itinerary(20, 1000F, positions));
-        itineraries.add(new Itinerary(10, 500F, positions));
+        ArrayList<Position> positions1 = new ArrayList<>();
+        positions1.add(new Position(43.117030,5.932195));
+        positions1.add(new Position(43.118030,5.933195));
+        positions1.add(new Position(43.119030,5.934195));
+        positions1.add(new Position(43.119230,5.934155));
+        distanceParcours= getDistanceFromItineraries(positions1);
+        itineraries.add(new Itinerary((int) (distanceParcours/speedUser), distanceParcours, positions1));
+
+        ArrayList<Position> positions2 = new ArrayList<>();
+        positions2.add(new Position(43.117030,5.932195));
+        positions2.add(new Position(43.118030,5.933195));
+        positions2.add(new Position(43.119030,5.934195));
+        positions2.add(new Position(43.118030,5.935195));
+        distanceParcours= getDistanceFromItineraries(positions2);
+        itineraries.add(new Itinerary((int) (distanceParcours/speedUser), distanceParcours, positions2));
 
         initRecycleView(v);
-        return v;
     }
 
     //Initialise the recyclerView
     private  void initRecycleView(View v){
+        ProgressBar progressBar = v.findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.GONE);
         Log.d(TAG,"initRecycleView: init recyclerview");
         RecyclerView recyclerView = v.findViewById(R.id.itinerariesRecycler);
         ItinerariesAdapter adapter = new ItinerariesAdapter(R.layout.activity_itineraries_adapter, itineraries);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+    }
+
+    private int getDistanceFromItineraries(ArrayList<Position> positions) {
+        int distanceParcours = 0;
+        for (int i=1; i< positions.size(); i++) {
+            distanceParcours += getDistanceBetweenTwoLocation(positions,i);
+        }
+        return distanceParcours;
+    }
+
+    private float getDistanceBetweenTwoLocation(ArrayList<Position> positionList, int i) {
+        Location locationA = new Location("point A");
+        locationA.setLatitude(positionList.get(i).getLat());
+        locationA.setLongitude(positionList.get(i).getLng());
+
+        Location locationB = new Location("point B");
+        locationB.setLatitude(positionList.get(i-1).getLat());
+        locationB.setLongitude(positionList.get(i-1).getLng());
+
+        return locationA.distanceTo(locationB);
     }
 }

@@ -29,10 +29,18 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ItinerariesAdapter extends RecyclerView.Adapter<ItinerariesAdapter.ViewHolder>{
     private static final String TAG = ItinerariesAdapter.class.getSimpleName(); //POUR LES LOG
@@ -60,7 +68,7 @@ public class ItinerariesAdapter extends RecyclerView.Adapter<ItinerariesAdapter.
 
         @Override
         public void onMapReady(GoogleMap googleMap) {
-            Log.i(TAG,"onMapReady");
+            Log.i(TAG,"onMapReady : " + itinerary + "  " + itinerary.getPositionList().size());
             MapsInitializer.initialize(itemView.getContext());
             ArrayList<Position> locationDouble = itinerary.getPositionList();
             ArrayList<LatLng> location = new ArrayList<>();
@@ -74,7 +82,7 @@ public class ItinerariesAdapter extends RecyclerView.Adapter<ItinerariesAdapter.
                         width(5) //specify the width of poly line
                         .color(Color.GREEN) //add color to our poly line.
                         .geodesic(true)); //make our poly line geodesic
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location.get(i), 14));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location.get(i), 15));
             }
 
             //On rajoute un marqueur au début du track
@@ -103,12 +111,14 @@ public class ItinerariesAdapter extends RecyclerView.Adapter<ItinerariesAdapter.
     @Override
     public void onBindViewHolder(ItinerariesAdapter.ViewHolder holder, int position) {
         holder.itinerary = itineraries.get(position);
-        holder.distanceActivity.setText(holder.itemView.getContext().getString(R.string.distance) + holder.itinerary.getDistance());
-        holder.durationActivity.setText(holder.itemView.getContext().getString(R.string.duration) + holder.itinerary.getDuration());
+        Log.i(TAG, "onBindViewHolder " + holder.itinerary);
+        holder.distanceActivity.setText(holder.itemView.getContext().getString(R.string.distance) + holder.itinerary.getDistance() + "m");
+        holder.durationActivity.setText(holder.itemView.getContext().getString(R.string.duration) + holder.itinerary.getDuration() + "s");
     }
 
     @Override
     public int getItemCount() {
         return this.itineraries.size();
     }
+
 }

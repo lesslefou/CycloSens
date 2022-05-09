@@ -52,8 +52,8 @@
 
     <ImageView
         android:id="@+id/imageGps"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:src="@drawable/gpslogo"
         app:layout_constraintBottom_toBottomOf="@id/gpsSwitch"
         app:layout_constraintEnd_toEndOf="parent"
@@ -82,8 +82,8 @@
 
     <ImageView
         android:id="@+id/imageCardiac"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:src="@drawable/cardiacbelt"
         app:layout_constraintTop_toTopOf="@id/cardiacSwitch"
         app:layout_constraintBottom_toBottomOf="@id/cardiacSwitch"
@@ -112,14 +112,15 @@
 
     <ImageView
         android:id="@+id/imagePedal"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:src="@drawable/cardiacbelt"
-        app:layout_constraintTop_toTopOf="@id/pedalSwitch"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/pedallogo"
         app:layout_constraintBottom_toBottomOf="@id/pedalSwitch"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.8"
-        app:layout_constraintStart_toEndOf="@id/pedalSwitch"/>
+        app:layout_constraintStart_toEndOf="@id/pedalSwitch"
+        app:layout_constraintTop_toTopOf="@id/pedalSwitch"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Switch
         android:id="@+id/ghostSwitch"
@@ -135,7 +136,7 @@
         android:id="@+id/textGhost"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/ghost"
+        android:text="@string/motivation"
         app:layout_constraintTop_toTopOf="@id/ghostSwitch"
         app:layout_constraintBottom_toBottomOf="@id/ghostSwitch"
         app:layout_constraintStart_toEndOf="@id/ghostSwitch" />
@@ -143,9 +144,9 @@
 
     <ImageView
         android:id="@+id/imageGhost"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:src="@drawable/ghost"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/motivationlogo"
         app:layout_constraintTop_toTopOf="@id/ghostSwitch"
         app:layout_constraintBottom_toBottomOf="@id/ghostSwitch"
         app:layout_constraintEnd_toEndOf="parent"

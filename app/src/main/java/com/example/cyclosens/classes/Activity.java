@@ -10,7 +10,7 @@ public class Activity  implements Serializable {
     private String dateActivity;
     private long duration;
     private int bpmAv;
-    private int strenghAv;
+    private int strengthAv;
     private Float speedAv;
     private Float distance;
     private ArrayList<Position> positionList;
@@ -20,7 +20,7 @@ public class Activity  implements Serializable {
     public long getDuration() { return duration; }
     public String getKey() { return key; }
     public int getBpmAv() { return bpmAv; }
-    public int getStrengthAv() { return strenghAv; }
+    public int getStrengthAv() { return strengthAv; }
     public Float getSpeedAv() { return speedAv; }
     public Float getDistance() { return distance; }
     public ArrayList<Position> getPositionList() { return positionList; }
@@ -30,7 +30,7 @@ public class Activity  implements Serializable {
     public void setDuration(long duration) { this.duration = duration; }
     public void setKey(String key) { this.key = key; }
     public void setBpmAv(int bpmAv) { this.bpmAv = bpmAv; }
-    public void setStrengthAv(int strengthAv) { this.strenghAv = strengthAv; }
+    public void setStrengthAv(int strengthAv) { this.strengthAv = strengthAv; }
     public void setSpeedAv(Float speedAv) { this.speedAv = speedAv; }
     public void setDistance(Float distance) { this.distance = distance; }
     public void setPositionList(ArrayList<Position> positionList) { this.positionList = positionList; }

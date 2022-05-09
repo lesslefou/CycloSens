@@ -397,6 +397,7 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
         final Float[] avDistance = new Float[1];
         final int[] avBPM = new int[1];
         final int[] avStrength = new int[1];
+        final Float[] avSpeed = new Float[1];
         final int[] nbActivities = new int[1];
 
         DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("user").child(userId).child("ResumeActivities");
@@ -409,6 +410,7 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
                     avDistance[0] = Float.parseFloat(Objects.requireNonNull(data.child("avDistance").getValue()).toString());
                     avBPM[0] = Integer.parseInt(Objects.requireNonNull(data.child("avBPM").getValue()).toString());
                     avStrength[0] = Integer.parseInt(Objects.requireNonNull(data.child("avStrength").getValue()).toString());
+                    avSpeed[0] = Float.parseFloat(Objects.requireNonNull(data.child("avSpeed").getValue()).toString());
 
                     cpt[0]++;
                 }
@@ -424,6 +426,7 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
         activitiesResume.put("avDistance", (avDistance[0] + totalDistanceActivity)/(nbActivities[0] + 1));
         activitiesResume.put("avBPM",(avBPM[0] + bpmValue/nbOfBat)/2);
         activitiesResume.put("avStrength", (avStrength[0] + strengthValue/nbOfStrengthCalculation)/2);
+        activitiesResume.put("avSpeed", (avStrength[0] + speedValue/nbOfSpeedCalculation)/2);
         mRef.updateChildren(activitiesResume);
     }
 

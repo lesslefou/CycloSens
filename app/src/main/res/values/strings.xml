@@ -49,13 +49,14 @@
 
     <string name="start">Start An Activity : </string>
     <string name="launch">Launch</string>
-    <string name="ghost">Add Ghost Mode ?</string>
+    <string name="motivation">Add Motivation Mode ?</string>
     <string name="pedal">Pedal pairing</string>
     <string name="cardiacBelt">Cardiac Belt pairing</string>
     <string name="gps">GPS pairing</string>
     <string name="toastLauncher">You need to pair all the bluetooth sensors and the gps of you device</string>
     <string name="activities">Activities</string>
     <string name="itineraries">Itineraries</string>
+    <string name="descriptionItinerary">The duration of the activity is calculated according to your average speed</string>
 
     <string name="onGoing">On Going</string>
     <string name="title_activity_maps">MapsActivity</string>
