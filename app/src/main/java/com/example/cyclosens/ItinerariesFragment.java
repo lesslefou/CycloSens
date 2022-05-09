@@ -27,8 +27,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 public class ItinerariesFragment extends Fragment {
@@ -53,7 +51,7 @@ public class ItinerariesFragment extends Fragment {
 
     private void getAvSpeedUser(View v) {
         final int[] cpt = {0};
-        final Float[] avSpeed = new Float[1];
+        final int[] avSpeed = {0};
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser != null) {
             String userId = firebaseUser.getUid();
@@ -62,7 +60,7 @@ public class ItinerariesFragment extends Fragment {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot data) {
                     if (cpt[0] == 0 ) {
-                        avSpeed[0] = Float.parseFloat(Objects.requireNonNull(data.child("avSpeed").getValue()).toString());
+                        if(data.exists()) {  avSpeed[0] = Integer.parseInt(Objects.requireNonNull(data.child("avSpeed").getValue()).toString()); }
 
                         creationBddItineraries(avSpeed[0], v);
 
@@ -75,8 +73,9 @@ public class ItinerariesFragment extends Fragment {
         }
     }
 
-    private void creationBddItineraries(Float speedUser, View v) {
+    private void creationBddItineraries(int speedUser, View v) {
         int distanceParcours = 0;
+        int duration=0;
         itineraries = new ArrayList<>();
 
         ArrayList<Position> positions = new ArrayList<>();
@@ -85,7 +84,8 @@ public class ItinerariesFragment extends Fragment {
         positions.add(new Position(43.119030,5.934195));
 
         distanceParcours = getDistanceFromItineraries(positions);
-        itineraries.add(new Itinerary((int) (distanceParcours/speedUser), distanceParcours, positions));
+        if (speedUser == 0) { duration = 0; } else { duration = distanceParcours/speedUser;}
+        itineraries.add(new Itinerary(duration, distanceParcours, positions));
 
         ArrayList<Position> positions1 = new ArrayList<>();
         positions1.add(new Position(43.117030,5.932195));
@@ -93,7 +93,8 @@ public class ItinerariesFragment extends Fragment {
         positions1.add(new Position(43.119030,5.934195));
         positions1.add(new Position(43.119230,5.934155));
         distanceParcours= getDistanceFromItineraries(positions1);
-        itineraries.add(new Itinerary((int) (distanceParcours/speedUser), distanceParcours, positions1));
+        if (speedUser == 0) { duration = 0; } else { duration = distanceParcours/speedUser;}
+        itineraries.add(new Itinerary(duration, distanceParcours, positions1));
 
         ArrayList<Position> positions2 = new ArrayList<>();
         positions2.add(new Position(43.117030,5.932195));
@@ -101,7 +102,8 @@ public class ItinerariesFragment extends Fragment {
         positions2.add(new Position(43.119030,5.934195));
         positions2.add(new Position(43.118030,5.935195));
         distanceParcours= getDistanceFromItineraries(positions2);
-        itineraries.add(new Itinerary((int) (distanceParcours/speedUser), distanceParcours, positions2));
+        if (speedUser == 0) { duration = 0; } else { duration = distanceParcours/speedUser;}
+        itineraries.add(new Itinerary(duration, distanceParcours, positions2));
 
         initRecycleView(v);
     }

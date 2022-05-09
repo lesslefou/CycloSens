@@ -65,6 +65,8 @@
     <string name="distance">Distance : </string>
     <string name="bpm">BPM : </string>
     <string name="strength">Strength : </string>
+    <string name="speedUnity">m/s</string>
+    <string name="cardiacUnity">bpm</string>
     <string name="bpmAv">BPM Average : </string>
     <string name="strengthAv">Strength Average : </string>
     <string name="speedAv">Speed Average :</string>

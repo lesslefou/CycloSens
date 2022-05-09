@@ -50,7 +50,6 @@ public class ItinerariesAdapter extends RecyclerView.Adapter<ItinerariesAdapter.
     public static class ViewHolder extends RecyclerView.ViewHolder implements OnMapReadyCallback {
         private final TextView durationActivity;
         private final TextView distanceActivity;
-        private GoogleMap mapCurrent;
         private final MapView map;
         private Itinerary itinerary;
 

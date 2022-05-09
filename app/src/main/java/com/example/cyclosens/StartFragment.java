@@ -69,15 +69,20 @@ public class StartFragment extends Fragment {
             mReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (cpt == 0 ) {
-                        initializeActivitiesResume(dataSnapshot.child("ResumeActivities"),v);
+                    if (cpt == 0) {
 
-                        for (DataSnapshot data : dataSnapshot.child("Activities").getChildren()) {
-                            Log.i(TAG,"lastTrack : " + data);
-                            initializeLastTrackResume(data,v);
-                            break;
+                        if (dataSnapshot.child("ResumeActivities").exists()) {
+                            initializeActivitiesResume(dataSnapshot.child("ResumeActivities"), v);
                         }
-                        cpt ++;
+
+                        if (dataSnapshot.child("Activities").exists()) {
+                            for (DataSnapshot data : dataSnapshot.child("Activities").getChildren()) {
+                                Log.i(TAG, "lastTrack : " + data);
+                                initializeLastTrackResume(data, v);
+                                break;
+                            }
+                        }
+                        cpt++;
                     }
                 }
                 @Override

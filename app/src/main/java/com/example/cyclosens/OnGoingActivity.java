@@ -80,9 +80,9 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
     private int nbOfStrengthCalculation = 0;
     private int strengthValue = 0;
     private int nbOfSpeedCalculation = 0;
-    private float speedValue = 0.0F;
+    private int speedValue = 0;
 
-    private float speedAv = 0;
+    private int speedAv = 0;
     private int strengthAv = 0;
     private int bpmAv = 0;
 
@@ -168,8 +168,7 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
     private void updateLocation(Location location) {
         positionList.add(new Position(location.getLatitude(), location.getLongitude()));
         float speedActual = location.getSpeedAccuracyMetersPerSecond();
-        Log.i(TAG, "vitesse : " + speedActual);
-        runOnUiThread(() -> binding.vitesse.setText(speedActual + "m/s"));
+        runOnUiThread(() -> binding.vitesse.setText(speedActual + getString(R.string.speedUnity)));
 
         speedValue += speedActual;
         nbOfSpeedCalculation ++;
@@ -254,7 +253,7 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
 
             int finalActualValue = actualValue;
             if (device.equals("pedal")) {
-                runOnUiThread(() -> binding.puissanceMoyenne.setText("Puissance :" + finalActualValue));
+                runOnUiThread(() -> binding.puissanceMoyenne.setText(getString(R.string.strength) + finalActualValue));
 
                 //on vient checker si la valeur mesurée est plus petite que l'ancienne
                 if (actualValue < strengthValue) { cptStrength ++; }
@@ -262,7 +261,7 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
                 strengthValue += actualValue;
                 nbOfStrengthCalculation ++;
             } else {
-                runOnUiThread(() -> binding.bpm.setText(finalActualValue + " bpm"));
+                runOnUiThread(() -> binding.bpm.setText(finalActualValue + getString(R.string.cardiacUnity)));
 
                 //on vient checker si la valeur mesurée est plus petite que l'ancienne
                 if (actualValue < bpmValue) { cptBpm ++; }
@@ -401,24 +400,39 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
 
     private void updateActivitiesResume(String userId) {
         final int[] cpt = {0};
-        final Float[] totalDistance = new Float[1];
-        final Float[] avDistance = new Float[1];
-        final int[] avBPM = new int[1];
-        final int[] avStrength = new int[1];
-        final Float[] avSpeed = new Float[1];
-        final int[] nbActivities = new int[1];
+        final int[] totalDistance = {0};
+        final int[] avDistance = {0};
+        final int[] avBPM = {0};
+        final int[] avStrength = {0};
+        final int[] avSpeed = {0};
+        final int[] nbActivities = {0};
 
         DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("user").child(userId).child("ResumeActivities");
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot data) {
-                if (cpt[0] == 0 ) {
-                    nbActivities[0] = Integer.parseInt(Objects.requireNonNull(data.child("nbActivities").getValue()).toString());
-                    totalDistance[0] = Float.parseFloat(Objects.requireNonNull(data.child("totalDistance").getValue()).toString());
-                    avDistance[0] = Float.parseFloat(Objects.requireNonNull(data.child("avDistance").getValue()).toString());
-                    avBPM[0] = Integer.parseInt(Objects.requireNonNull(data.child("avBPM").getValue()).toString());
-                    avStrength[0] = Integer.parseInt(Objects.requireNonNull(data.child("avStrength").getValue()).toString());
-                    avSpeed[0] = Float.parseFloat(Objects.requireNonNull(data.child("avSpeed").getValue()).toString());
+
+                if (cpt[0] == 0) {
+                    if (data.exists()) {
+                        nbActivities[0] = Integer.parseInt(Objects.requireNonNull(data.child("nbActivities").getValue()).toString());
+                        Log.i(TAG, "nb activity " + nbActivities[0]);
+                        totalDistance[0] = Integer.parseInt(Objects.requireNonNull(data.child("totalDistance").getValue()).toString());
+                        avDistance[0] = Integer.parseInt(Objects.requireNonNull(data.child("avDistance").getValue()).toString());
+                        avBPM[0] = Integer.parseInt(Objects.requireNonNull(data.child("avBPM").getValue()).toString());
+                        avStrength[0] = Integer.parseInt(Objects.requireNonNull(data.child("avStrength").getValue()).toString());
+                        avSpeed[0] = Integer.parseInt(Objects.requireNonNull(data.child("avSpeed").getValue()).toString());
+                    }
+
+                    int totalDistanceActivity = retrievedTotalDistance(positionList);
+                    Map<String, Object> activitiesResume = new HashMap<>();
+                    Log.i(TAG, "nb activityy " + nbActivities[0]);
+                    activitiesResume.put("nbActivities",nbActivities[0] + 1);
+                    activitiesResume.put("totalDistance",totalDistance[0] + totalDistanceActivity);
+                    activitiesResume.put("avDistance", (avDistance[0] + totalDistanceActivity)/(nbActivities[0] + 1));
+                    if (avBPM[0] == 0) { activitiesResume.put("avBPM", bpmAv); } else { activitiesResume.put("avBPM",(avBPM[0] + bpmAv)/2); }
+                    if (avStrength[0] == 0) { activitiesResume.put("avStrength", strengthAv); } else { activitiesResume.put("avStrength", (avStrength[0] + strengthAv)/2); }
+                    if (avSpeed[0] == 0) { activitiesResume.put("avSpeed", speedAv); } else { activitiesResume.put("avSpeed", (avSpeed[0] + speedAv)/2); }
+                    mRef.updateChildren(activitiesResume);
 
                     cpt[0]++;
                 }
@@ -426,16 +440,6 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {  }
         });
-
-        Float totalDistanceActivity = retrievedTotalDistance(positionList);
-        Map<String, Object> activitiesResume = new HashMap<>();
-        activitiesResume.put("nbActivities",nbActivities[0] ++);
-        activitiesResume.put("totalDistance",totalDistance[0] + totalDistanceActivity);
-        activitiesResume.put("avDistance", (avDistance[0] + totalDistanceActivity)/(nbActivities[0] + 1));
-        activitiesResume.put("avBPM",(avBPM[0] + bpmAv)/2);
-        activitiesResume.put("avStrength", (avStrength[0] + strengthAv)/2);
-        activitiesResume.put("avSpeed", (avSpeed[0] + speedAv)/2);
-        mRef.updateChildren(activitiesResume);
     }
 
     private String updateActivities(long duration, String date, ArrayList<Position> positionList, String userId) {
@@ -456,8 +460,8 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
         return key;
     }
 
-    private float retrievedTotalDistance(ArrayList<Position> positionList) {
-        float totalDistance = 0.0F;
+    private int retrievedTotalDistance(ArrayList<Position> positionList) {
+        int totalDistance = 0;
         for (int i=1; i<positionList.size(); i++) {
             totalDistance += getDistanceBetweenTwoLocation(i);
         }

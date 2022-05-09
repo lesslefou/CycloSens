@@ -3,6 +3,7 @@ package com.example.cyclosens.activities;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
@@ -34,6 +35,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import com.google.firebase.database.ValueEventListener;
 
@@ -100,14 +102,14 @@ public class ActivityInformation extends AppCompatActivity implements OnMapReady
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser != null) {
             String userId = firebaseUser.getUid();
-
+            updateActivitiesResume(userId);
             DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("user").child(userId).child("Activities");
             Log.i(TAG, activity.getKey());
             mRef.child(activity.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     mRef.child(activity.getKey()).removeValue();
-                    finish();
+                    onBackPressed();
                 }
 
                 @Override
@@ -116,7 +118,69 @@ public class ActivityInformation extends AppCompatActivity implements OnMapReady
                 }
             });
         }
+    }
 
+
+    private void updateActivitiesResume(String userId) {
+        final int[] cpt = {0};
+        final int[] totalDistance = {0};
+        final int[] avDistance = {0};
+        final int[] avBPM = {0};
+        final int[] avStrength = {0};
+        final int[] avSpeed = {0};
+        final int[] nbActivities = {0};
+
+        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("user").child(userId).child("ResumeActivities");
+        mRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot data) {
+                if (cpt[0] == 0 ) {
+                    if (data.exists()) {
+                        nbActivities[0] = Integer.parseInt(Objects.requireNonNull(data.child("nbActivities").getValue()).toString());
+                        totalDistance[0] = Integer.parseInt(Objects.requireNonNull(data.child("totalDistance").getValue()).toString());
+                        avDistance[0] = Integer.parseInt(Objects.requireNonNull(data.child("avDistance").getValue()).toString());
+                        avBPM[0] = Integer.parseInt(Objects.requireNonNull(data.child("avBPM").getValue()).toString());
+                        avStrength[0] = Integer.parseInt(Objects.requireNonNull(data.child("avStrength").getValue()).toString());
+                        avSpeed[0] = Integer.parseInt(Objects.requireNonNull(data.child("avSpeed").getValue()).toString());
+                    }
+
+                    int totalDistanceActivity = retrievedTotalDistance(activity.getPositionList());
+                    Map<String, Object> activitiesResume = new HashMap<>();
+                    activitiesResume.put("nbActivities",nbActivities[0] - 1);
+                    activitiesResume.put("totalDistance",totalDistance[0] - totalDistanceActivity);
+                    activitiesResume.put("avDistance", (avDistance[0] * (nbActivities[0])) - totalDistanceActivity);
+                    if (nbActivities[0] == 1) { activitiesResume.put("avBPM", avBPM[0] - activity.getBpmAv()); } else { activitiesResume.put("avBPM",(avBPM[0]*2) - activity.getBpmAv()); }
+                    if (nbActivities[0] == 1) { activitiesResume.put("avStrength", avStrength[0] - activity.getStrengthAv()); } else { activitiesResume.put("avStrength", (avStrength[0]*2) - activity.getStrengthAv()); }
+                    if (nbActivities[0] == 1) { activitiesResume.put("avSpeed", avSpeed[0] - activity.getSpeedAv()); } else { activitiesResume.put("avSpeed", (avSpeed[0]*2) - activity.getSpeedAv()); }
+                    mRef.updateChildren(activitiesResume);
+
+                    cpt[0]++;
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {  }
+        });
+    }
+
+    private int retrievedTotalDistance(ArrayList<Position> positionList) {
+        int totalDistance = 0;
+        for (int i=1; i<positionList.size(); i++) {
+            totalDistance += getDistanceBetweenTwoLocation(i);
+        }
+
+        return totalDistance;
+    }
+
+    private float getDistanceBetweenTwoLocation(int i) {
+        Location locationA = new Location("point A");
+        locationA.setLatitude(activity.getPositionList().get(i).getLat());
+        locationA.setLongitude(activity.getPositionList().get(i).getLng());
+
+        Location locationB = new Location("point B");
+        locationB.setLatitude(activity.getPositionList().get(i-1).getLat());
+        locationB.setLongitude(activity.getPositionList().get(i-1).getLng());
+
+        return locationA.distanceTo(locationB);
     }
 
     private void updateNameActivity() {

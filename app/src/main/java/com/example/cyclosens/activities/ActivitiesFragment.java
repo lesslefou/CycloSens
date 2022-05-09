@@ -82,8 +82,8 @@ public class ActivitiesFragment extends Fragment {
                     long duration = data.child("duration").getValue(long.class);
                     int bpmAv = data.child("bpmAv").getValue(int.class);
                     int strengthAv = data.child("strengthAv").getValue(int.class);
-                    Float speedAv = data.child("speedAv").getValue(Float.class);
-                    Float distance = data.child("distance").getValue(Float.class);
+                    int speedAv = data.child("speedAv").getValue(int.class);
+                    int distance = data.child("distance").getValue(int.class);
 
                     for (DataSnapshot data2 : data.child("positionList").getChildren()) {
                         location.add(new Position(data2.child("lat").getValue(Double.class),data2.child("lng").getValue(Double.class)));

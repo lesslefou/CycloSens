@@ -59,7 +59,7 @@
         app:layout_constraintTop_toBottomOf="@id/titre"
         app:layout_constraintVertical_bias="0.2"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:text="Puissance : 0"/>
+        android:text="@string/strength"/>
 
     <fragment
         android:layout_width="match_parent"
@@ -77,7 +77,7 @@
         android:id="@+id/vitesse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="0m/s"
+        android:text="@string/speedUnity"
         android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
