@@ -82,6 +82,10 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
     private int nbOfSpeedCalculation = 0;
     private float speedValue = 0.0F;
 
+    private float speedAv = 0;
+    private int strengthAv = 0;
+    private int bpmAv = 0;
+
     private int cptBpm = 0;
     private int cptStrength=0;
 
@@ -138,12 +142,16 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd",new Locale("US"));
             String strDate = dateFormat.format(date);
 
+            if (nbOfBat == 0) { bpmAv = 0; } else { bpmAv = bpmValue/nbOfBat; }
+            if (nbOfStrengthCalculation == 0) { strengthAv = 0; } else { strengthAv = strengthValue/nbOfStrengthCalculation; }
+            if (nbOfSpeedCalculation == 0) { speedAv = 0; } else { speedAv = speedValue/nbOfSpeedCalculation; }
+
             String key = createActivity(duration, strDate, positionList); //SAVE THE DATA ON THE DATABASE
 
             if (nbOfBat == 0) { nbOfBat = 1; }
             if (nbOfSpeedCalculation == 0 ) { nbOfSpeedCalculation = 1; }
             if (nbOfStrengthCalculation == 0) { nbOfStrengthCalculation = 1; }
-            Activity activityOnGoing = new Activity(key, getString(R.string.activity),strDate,duration,bpmValue/nbOfBat,strengthValue/nbOfStrengthCalculation,speedValue/nbOfSpeedCalculation,retrievedTotalDistance(positionList),positionList); //CHANGER STRENGH
+            Activity activityOnGoing = new Activity(key, getString(R.string.activity),strDate,duration,bpmAv,strengthAv,speedAv,retrievedTotalDistance(positionList),positionList); //CHANGER STRENGH
 
             Log.i(TAG, "deconnection du device");
             bluetoothCardiacGatt.disconnect();
@@ -424,9 +432,9 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
         activitiesResume.put("nbActivities",nbActivities[0] ++);
         activitiesResume.put("totalDistance",totalDistance[0] + totalDistanceActivity);
         activitiesResume.put("avDistance", (avDistance[0] + totalDistanceActivity)/(nbActivities[0] + 1));
-        activitiesResume.put("avBPM",(avBPM[0] + bpmValue/nbOfBat)/2);
-        activitiesResume.put("avStrength", (avStrength[0] + strengthValue/nbOfStrengthCalculation)/2);
-        activitiesResume.put("avSpeed", (avStrength[0] + speedValue/nbOfSpeedCalculation)/2);
+        activitiesResume.put("avBPM",(avBPM[0] + bpmAv)/2);
+        activitiesResume.put("avStrength", (avStrength[0] + strengthAv)/2);
+        activitiesResume.put("avSpeed", (avSpeed[0] + speedAv)/2);
         mRef.updateChildren(activitiesResume);
     }
 
@@ -439,9 +447,9 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
         activity.put("name",getString(R.string.activity));
         activity.put("date", date);
         activity.put("duration", duration);
-        activity.put("bpmAv", bpmValue/nbOfBat);
-        activity.put("strengthAv", strengthValue/nbOfStrengthCalculation);
-        activity.put("speedAv", speedValue/nbOfSpeedCalculation);
+        activity.put("bpmAv", bpmAv);
+        activity.put("strengthAv", strengthAv);
+        activity.put("speedAv", speedAv);
         activity.put("distance", retrievedTotalDistance(positionList));
         activity.put("positionList", positionList);
         mRef.updateChildren(activity);
