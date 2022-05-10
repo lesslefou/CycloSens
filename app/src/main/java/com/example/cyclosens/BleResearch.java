@@ -3,6 +3,7 @@ package com.example.cyclosens;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -62,7 +63,8 @@ public class BleResearch extends AppCompatActivity {
         //Ask for BLE permission
         if(bleResearchAdapter != null){
             Log.i(TAG, "bleResearchAdapter not null");
-            askBluetoothPermission();
+            getBLEPermission();
+            getBLEConnectPermission();
 
             //Set the ble device to the database in order to connect later
             bleResearchAdapter.setOnItemClickListener(bluetoothDevice -> {
@@ -116,24 +118,6 @@ public class BleResearch extends AppCompatActivity {
 
     }
 
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode != REQUEST_CODE_ENABLE_BLUETOOTH)
-            return;
-        if (resultCode == RESULT_OK)
-        {
-            Toast.makeText(getApplicationContext(), getString(R.string.bleEnabled), Toast.LENGTH_SHORT).show();
-            startLeScanBLEWithPermission();
-        }
-        else
-        {
-            Toast.makeText(getApplicationContext(), getString(R.string.bleDisabled), Toast.LENGTH_SHORT).show();
-        }
-    }
-
     /**
      * BLE acceptation
      */
@@ -161,6 +145,21 @@ public class BleResearch extends AppCompatActivity {
 
     }
 
+    /**
+     * Prompts the user for permission to use the device ble.
+     */
+    private void getBLEPermission() {
+        if (ContextCompat.checkSelfPermission(BleResearch.this, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_DENIED)
+        {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+            {
+                ActivityCompat.requestPermissions(BleResearch.this, new String[]{Manifest.permission.BLUETOOTH_SCAN}, 2);
+            }
+        } else {
+            getBLEConnectPermission();
+        }
+    }
+
 
     /**
      * Localisation permission
@@ -172,6 +171,22 @@ public class BleResearch extends AppCompatActivity {
             startLEBle();
         } else {
             ActivityCompat.requestPermissions(this,  new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+
+        }
+    }
+
+    /**
+     * Localisation permission
+     */
+    private void getBLEConnectPermission() {
+        if (ContextCompat.checkSelfPermission(BleResearch.this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_DENIED)
+        {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+            {
+                ActivityCompat.requestPermissions(BleResearch.this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
+            }
+        } else {
+            askBluetoothPermission();
         }
     }
 
@@ -180,11 +195,11 @@ public class BleResearch extends AppCompatActivity {
      */
     private void startLEBle() {
         if (bluetoothAdapter.isEnabled()) {
-            Log.i(TAG, "bluetoothAdapter enabled");
+            Log.i(TAG, getString(R.string.bleNotSupported));
             bluetoothAdapter.getBluetoothLeScanner().startScan(mScanCallback);
             list();
         } else {
-            Log.i(TAG, "bluetoothAdapter not enabled");
+            Log.i(TAG, getString(R.string.bleEnabled));
         }
     }
 

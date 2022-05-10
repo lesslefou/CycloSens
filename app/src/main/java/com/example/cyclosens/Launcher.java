@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -38,7 +39,7 @@ public class Launcher extends AppCompatActivity {
     private BluetoothDevice cardiacDevice, pedalDevice;
     private boolean beltFound, pedalFound;
     private BluetoothAdapter bluetoothAdapter = null;
-    private boolean locationPermissionGranted;
+    private boolean locationPermissionGranted = false, blePermissionGranted = false;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 2;
     private static final int REQUEST_CODE_ENABLE_BLUETOOTH = 1;
 
@@ -62,6 +63,7 @@ public class Launcher extends AppCompatActivity {
             binding.btnLaunch.setOnClickListener(view -> {
                 if (gps && cardiac && pedal) {
                     getLocationPermission();
+                    getBLEPermission();
                     checkIfOnGoingPossible();
                 } else {
                     Toast.makeText(Launcher.this,R.string.toastLauncher, Toast.LENGTH_SHORT).show();
@@ -72,23 +74,8 @@ public class Launcher extends AppCompatActivity {
         binding.backBtn.setOnClickListener(view -> finish());
     }
 
-    /**
-     * Prompts the user for permission to use the device location.
-     */
-    private void getLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            locationPermissionGranted = true;
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-    }
-
     private void checkIfOnGoingPossible() {
-        if (locationPermissionGranted && askBluetoothPermission() ) {
-
+        if (locationPermissionGranted && blePermissionGranted) {
             //5 secondes waits for searching devices before connexion
             // Delay in seconds
             int secs = 5;
@@ -142,11 +129,40 @@ public class Launcher extends AppCompatActivity {
             else
             {
                 Toast.makeText(getApplicationContext(), getString(R.string.bleEnabled), Toast.LENGTH_SHORT).show();
+                blePermissionGranted = true;
                 bluetoothAdapter.getBluetoothLeScanner().startScan(mScanCallback);
             }
             return true;
         }
+    }
 
+
+    /**
+     * Prompts the user for permission to use the device ble.
+     */
+    private void getBLEPermission() {
+        if (ContextCompat.checkSelfPermission(Launcher.this, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_DENIED)
+        {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+            {
+                ActivityCompat.requestPermissions(Launcher.this, new String[]{Manifest.permission.BLUETOOTH_SCAN}, 2);
+            }
+        } else {
+            askBluetoothPermission();
+        }
+    }
+
+    /**
+     * Prompts the user for permission to use the device location.
+     */
+    private void getLocationPermission() {
+        if (ContextCompat.checkSelfPermission(Launcher.this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            locationPermissionGranted = true;
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
     }
 
     private final ScanCallback mScanCallback = new ScanCallback() {

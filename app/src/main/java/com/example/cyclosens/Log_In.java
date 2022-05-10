@@ -89,7 +89,9 @@ public class Log_In extends AppCompatActivity {
                 if(task.isSuccessful()){
                     if (checkIfEmailConfirm()) {
                         Toast.makeText(Log_In.this, R.string.welcomeUser, Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(getApplicationContext(),Welcome.class));
+                        Intent i = new Intent(Log_In.this, Welcome.class);
+                        i.putExtra("fragment", "start");
+                        startActivity(i);
                         finish();
                     } else {
                         Toast.makeText(Log_In.this, R.string.emailConfirmation, Toast.LENGTH_SHORT).show();
