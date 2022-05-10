@@ -1,5 +1,6 @@
 package com.example.cyclosens;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -44,15 +45,14 @@ public class BleResearch extends AppCompatActivity {
     private BleResearchAdapter bleResearchAdapter;
     private ArrayList<BluetoothDevice> bleDevices;
     private BluetoothAdapter bluetoothAdapter = null;
-
-
+    private String device;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         com.example.cyclosens.databinding.ActivityBleResearchBinding binding = ActivityBleResearchBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        String device = getIntent().getExtras().getString("device");
+        device = getIntent().getExtras().getString("device");
         bleDevices = new ArrayList<BluetoothDevice>();
 
         RecyclerView monRecycler = binding.recycleViewBle;
@@ -60,31 +60,100 @@ public class BleResearch extends AppCompatActivity {
         monRecycler.setAdapter(bleResearchAdapter);
         monRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-        //Ask for BLE permission
+        String[] PERMISSIONS = new String[]{
+                Manifest.permission.BLUETOOTH_CONNECT,
+                Manifest.permission.BLUETOOTH_SCAN,
+                Manifest.permission.ACCESS_FINE_LOCATION
+        };
         if(bleResearchAdapter != null){
-            Log.i(TAG, "bleResearchAdapter not null");
-            getBLEPermission();
-            getBLEConnectPermission();
+            if (!hasPermission(PERMISSIONS)) {
+                ActivityCompat.requestPermissions(BleResearch.this, PERMISSIONS, 1);
+            } else {
+                //Ask for BLE permission
+                askBluetoothPermission();
+                Log.i(TAG, "bleResearchAdapter not null");
 
-            //Set the ble device to the database in order to connect later
-            bleResearchAdapter.setOnItemClickListener(bluetoothDevice -> {
-                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                if (firebaseUser != null) {
-                    String userId = firebaseUser.getUid();
-                    DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("user").child(userId).child("bleDevices").child(device);
-                    mRef.child("name").setValue(bluetoothDevice.getName());
-                    mRef.child("address").setValue(bluetoothDevice.getAddress());
-                    Log.d("adapter", mRef.toString());
+                //Set the ble device to the database in order to connect later
+                bleResearchAdapter.setOnItemClickListener(bluetoothDevice -> {
+                    FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                    if (firebaseUser != null) {
+                        String userId = firebaseUser.getUid();
+                        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("user").child(userId).child("bleDevices").child(device);
+                        mRef.child("name").setValue(bluetoothDevice.getName());
+                        mRef.child("address").setValue(bluetoothDevice.getAddress());
+                        Log.d("adapter", mRef.toString());
 
-                    bluetoothAdapter.getBluetoothLeScanner().stopScan(mScanCallback);
-                    Intent i = new Intent(BleResearch.this, Devices.class);
-                    startActivity(i);
-                    finish();
-                }
-            });
+                        bluetoothAdapter.getBluetoothLeScanner().stopScan(mScanCallback);
+                        Intent i = new Intent(BleResearch.this, Devices.class);
+                        startActivity(i);
+                        finish();
+                    }
+                });
+            }
         }
 
+
+
         binding.btnBack.setOnClickListener(v-> finish());
+    }
+
+    private boolean hasPermission(String... PERMISSIONS) {
+        if (getApplicationContext() != null && PERMISSIONS != null) {
+            for (String permission: PERMISSIONS) {
+                if (ActivityCompat.checkSelfPermission(getApplicationContext(), permission) != PackageManager.PERMISSION_GRANTED) {
+                    return  false;
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        boolean connect=false, scan=false, location=false;
+
+        if (requestCode == 1) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                connect=true;
+                //Toast.makeText(this, "BLUETOOTH_CONNECT Permission is granted", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "BLUETOOTH_CONNECT Permission is denied", Toast.LENGTH_SHORT).show();
+            }
+
+            if (grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                scan=true;
+                //Toast.makeText(this, "BLUETOOTH_SCAN Permission is granted", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "BLUETOOTH_SCAN Permission is denied", Toast.LENGTH_SHORT).show();
+            }
+
+            if (grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                location=true;
+                //Toast.makeText(this, "ACCESS_FINE_LOCATION Permission is granted", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "ACCESS_FINE_LOCATION Permission is denied", Toast.LENGTH_SHORT).show();
+            }
+
+            if (connect && scan && location) {
+                askBluetoothPermission();
+                bleResearchAdapter.setOnItemClickListener(bluetoothDevice -> {
+                    FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                    if (firebaseUser != null) {
+                        String userId = firebaseUser.getUid();
+                        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("user").child(userId).child("bleDevices").child(device);
+                        mRef.child("name").setValue(bluetoothDevice.getName());
+                        mRef.child("address").setValue(bluetoothDevice.getAddress());
+                        Log.d("adapter", mRef.toString());
+
+                        bluetoothAdapter.getBluetoothLeScanner().stopScan(mScanCallback);
+                        Intent i = new Intent(BleResearch.this, Devices.class);
+                        startActivity(i);
+                        finish();
+                    }
+                });
+            }
+        }
     }
 
     private final ScanCallback mScanCallback = new ScanCallback() {
@@ -139,55 +208,10 @@ public class BleResearch extends AppCompatActivity {
             else
             {
                 Toast.makeText(getApplicationContext(), getString(R.string.bleEnabled), Toast.LENGTH_SHORT).show();
-                startLeScanBLEWithPermission();
+                startLEBle();
             }
         }
 
-    }
-
-    /**
-     * Prompts the user for permission to use the device ble.
-     */
-    private void getBLEPermission() {
-        if (ContextCompat.checkSelfPermission(BleResearch.this, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_DENIED)
-        {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-            {
-                ActivityCompat.requestPermissions(BleResearch.this, new String[]{Manifest.permission.BLUETOOTH_SCAN}, 2);
-            }
-        } else {
-            getBLEConnectPermission();
-        }
-    }
-
-
-    /**
-     * Localisation permission
-     */
-    private void startLeScanBLEWithPermission() {
-        if (ActivityCompat.checkSelfPermission(
-                this, Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED) {
-            startLEBle();
-        } else {
-            ActivityCompat.requestPermissions(this,  new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-
-        }
-    }
-
-    /**
-     * Localisation permission
-     */
-    private void getBLEConnectPermission() {
-        if (ContextCompat.checkSelfPermission(BleResearch.this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_DENIED)
-        {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-            {
-                ActivityCompat.requestPermissions(BleResearch.this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 2);
-            }
-        } else {
-            askBluetoothPermission();
-        }
     }
 
     /**

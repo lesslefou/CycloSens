@@ -89,6 +89,8 @@
     <string name="pedalDevice">Pedal Device</string>
     <string name="addCardiacDevice">Add Cardiac Device</string>
     <string name="addPedalDevice">Add Pedal Device</string>
+    <string name="blePermission">BLE Permission</string>
+    <string name="locationPermission">GPS Permission</string>
 
     <string name="deviceUnknown">Device Unknown</string>
     <string name="schoolName">Isen Toulon</string>

@@ -43,6 +43,7 @@ public class Launcher extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 2;
     private static final int REQUEST_CODE_ENABLE_BLUETOOTH = 1;
 
+    @RequiresApi(api = Build.VERSION_CODES.S)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,14 +58,21 @@ public class Launcher extends AppCompatActivity {
         binding.cardiacSwitch.setOnCheckedChangeListener((compoundButton, isChecked) -> cardiac = isChecked);
         binding.pedalSwitch.setOnCheckedChangeListener((compoundButton, isChecked) -> pedal = isChecked);
 
+        String[] PERMISSIONS = new String[]{
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.BLUETOOTH_SCAN
+        };
 
         //Check if the user has already paired his 2 devices
         if (retrieveDevicesNameSaved()) {
             binding.btnLaunch.setOnClickListener(view -> {
                 if (gps && cardiac && pedal) {
-                    getLocationPermission();
-                    getBLEPermission();
-                    checkIfOnGoingPossible();
+                    if (!hasPermission(PERMISSIONS)) {
+                        ActivityCompat.requestPermissions(Launcher.this, PERMISSIONS, 1);
+                    } else {
+                        askBluetoothPermission();
+                        checkIfOnGoingPossible();
+                    }
                 } else {
                     Toast.makeText(Launcher.this,R.string.toastLauncher, Toast.LENGTH_SHORT).show();
                 }
@@ -72,6 +80,43 @@ public class Launcher extends AppCompatActivity {
         }
 
         binding.backBtn.setOnClickListener(view -> finish());
+    }
+
+
+    private boolean hasPermission(String... PERMISSIONS) {
+        if (getApplicationContext() != null && PERMISSIONS != null) {
+            for (String permission: PERMISSIONS) {
+                if (ActivityCompat.checkSelfPermission(getApplicationContext(), permission) != PackageManager.PERMISSION_GRANTED) {
+                    return  false;
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //Toast.makeText(this, "ACCESS_FINE_LOCATION Permission is granted", Toast.LENGTH_SHORT).show();
+                locationPermissionGranted = true;
+            } else {
+                Toast.makeText(this, "ACCESS_FINE_LOCATION Permission is denied", Toast.LENGTH_SHORT).show();
+            }
+
+            if (grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                //Toast.makeText(this, "BLUETOOTH_SCAN Permission is granted", Toast.LENGTH_SHORT).show();
+                blePermissionGranted= true;
+            } else {
+                Toast.makeText(this, "BLUETOOTH_SCAN Permission is denied", Toast.LENGTH_SHORT).show();
+            }
+
+            if (locationPermissionGranted && blePermissionGranted) {
+                askBluetoothPermission();
+                checkIfOnGoingPossible();
+            }
+        }
     }
 
     private void checkIfOnGoingPossible() {
@@ -136,34 +181,6 @@ public class Launcher extends AppCompatActivity {
         }
     }
 
-
-    /**
-     * Prompts the user for permission to use the device ble.
-     */
-    private void getBLEPermission() {
-        if (ContextCompat.checkSelfPermission(Launcher.this, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_DENIED)
-        {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-            {
-                ActivityCompat.requestPermissions(Launcher.this, new String[]{Manifest.permission.BLUETOOTH_SCAN}, 2);
-            }
-        } else {
-            askBluetoothPermission();
-        }
-    }
-
-    /**
-     * Prompts the user for permission to use the device location.
-     */
-    private void getLocationPermission() {
-        if (ContextCompat.checkSelfPermission(Launcher.this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            locationPermissionGranted = true;
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-    }
 
     private final ScanCallback mScanCallback = new ScanCallback() {
         @Override
