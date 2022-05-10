@@ -76,6 +76,7 @@ public class Setting extends AppCompatActivity {
         });
     }
 
+    //Pop a message before deleting account
     protected void showInformationSavedDialog() {
         AlertDialog.Builder builder;
         builder = new AlertDialog.Builder(this,R.style.MyDialogTheme);
@@ -90,7 +91,7 @@ public class Setting extends AppCompatActivity {
         alert.show();
     }
 
-    //Delete the user and its information from the database
+    //Delete the user and his information from the database
     protected void deleteUSer() {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         firebaseUser.delete().addOnCompleteListener(new OnCompleteListener<Void>() {

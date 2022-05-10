@@ -23,6 +23,7 @@
 
     <TextView
         android:id="@+id/cardiacDeviceTitle"
+        android:textColor="@color/black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/cardiacDevice"
@@ -49,6 +50,7 @@
 
     <TextView
         android:id="@+id/cardiacDeviceName"
+        android:textColor="@color/black"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -61,6 +63,7 @@
 
     <TextView
         android:id="@+id/pedalDeviceTitle"
+        android:textColor="@color/black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="70dp"
@@ -85,6 +88,7 @@
 
     <TextView
         android:id="@+id/pedalDeviceName"
+        android:textColor="@color/black"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -94,17 +98,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pedalDeviceTitle" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
+
         android:id="@+id/btn_back"
+        android:textSize="20dp"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/orange"
         android:text="@string/back"
-        android:background="@color/dark_grey"
-        android:textColor="@color/orange"
-        app:layout_constraintTop_toBottomOf="@id/pedalDeviceName"
+        android:textColor="@color/black"
+        android:theme="@style/Theme.MaterialComponents"
+        app:cornerRadius="90dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.9"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pedalDeviceName"
+        app:layout_constraintVertical_bias="0.9"
+        app:strokeColor="@color/black"
+        app:strokeWidth="3dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

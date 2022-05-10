@@ -29,17 +29,19 @@
 
         <TextView
             android:id="@+id/name"
+            android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="10dp"
             android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
             android:text="@string/name"
             android:textSize="30sp" />
 
         <TextView
             android:id="@+id/edit_name"
+            android:textColor="@color/black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/name"
@@ -49,17 +51,19 @@
 
         <TextView
             android:id="@+id/surname"
+            android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/name"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="20dp"
             android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
             android:text="@string/surname"
             android:textSize="30sp" />
 
         <TextView
             android:id="@+id/edit_surname"
+            android:textColor="@color/black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/surname"
@@ -69,6 +73,7 @@
 
         <TextView
             android:id="@+id/email"
+            android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/surname"
@@ -80,6 +85,7 @@
 
         <TextView
             android:id="@+id/edit_email"
+            android:textColor="@color/black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/email"
@@ -91,6 +97,7 @@
 
     <TextView
         android:id="@+id/forgotPassword"
+        android:textColor="@color/black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/relative"
@@ -100,28 +107,41 @@
         android:clickable="true"
         android:text="@string/resetPassword" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
+
         android:id="@+id/btn_unsubscribe"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/orange"
+        android:textSize="20dp"
         android:text="@string/unsubscribe"
-        android:background="@color/dark_grey"
-        android:textColor="@color/orange"
-        app:layout_constraintTop_toBottomOf="@id/relative"
+        android:textColor="@color/black"
+        android:theme="@style/Theme.MaterialComponents"
+        app:cornerRadius="90dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/btn_back"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/relative"
+        app:strokeColor="@color/black"
+        app:strokeWidth="3dp" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
+
         android:id="@+id/btn_back"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/orange"
+        android:textSize="20dp"
         android:text="@string/back"
-        android:background="@color/dark_grey"
-        android:textColor="@color/orange"
-        app:layout_constraintTop_toBottomOf="@id/relative"
+        android:textColor="@color/black"
+        android:theme="@style/Theme.MaterialComponents"
+        app:cornerRadius="90dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_unsubscribe"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btn_unsubscribe"/>
-
+        app:layout_constraintTop_toBottomOf="@id/relative"
+        app:strokeColor="@color/black"
+        app:strokeWidth="3dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

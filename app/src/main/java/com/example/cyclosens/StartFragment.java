@@ -40,7 +40,7 @@ import java.util.Objects;
 
 @SuppressLint("SetTextI18n")
 public class StartFragment extends Fragment {
-    private static final String TAG = StartFragment.class.getSimpleName(); //POUR LES LOG
+    private static final String TAG = StartFragment.class.getSimpleName(); //For the logs
     private ArrayList<Position> positionsLastTrack;
     int cpt = 0;
 
@@ -95,6 +95,7 @@ public class StartFragment extends Fragment {
         return v;
     }
 
+    //Summary of all the activity
     private void initializeActivitiesResume(DataSnapshot data, View v) {
         Log.i(TAG,"initializeActivitiesResume");
 
@@ -117,6 +118,7 @@ public class StartFragment extends Fragment {
         avStrengthTV.setText(avStrength);
     }
 
+    //Last track resume
     private void initializeLastTrackResume(DataSnapshot data, View v) {
         Log.i(TAG,"initializeLastTrackResume");
         String distanceLastTrack = Objects.requireNonNull(data.child("distance").getValue()).toString();
@@ -150,19 +152,19 @@ public class StartFragment extends Fragment {
                     for (int i = 0; i < positionsLastTrack.size(); i++) {
                         location.add(new LatLng(positionsLastTrack.get(i).getLat(), positionsLastTrack.get(i).getLng()));
 
-                        googleMap.addPolyline(line.add( //On rajoute a notre ligne
-                                location.get(i)). //L'element actuel de l'array list
+                        googleMap.addPolyline(line.add( //Add to line
+                                location.get(i)). //Actual array list element
                                 width(5) //specify the width of poly line
                                 .color(Color.GREEN) //add color to our poly line.
                                 .geodesic(true)); //make our poly line geodesic
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location.get(i), 15));
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location.get(i), 14));
                     }
 
-                    //On rajoute un marqueur au début du track
+                    //Add a marker at the beginning of the track
                     googleMap.addMarker(new MarkerOptions().position(location.get(0)).title("Start"));
-                    //On recupere la taille totale de l'array liste
+                    //Catch the size of the locations array
                     int size = location.size();
-                    //On rajoute un marqueur à la fin du track
+                    //Add a marker at the end of the track
                     googleMap.addMarker(new MarkerOptions().position(location.get(size-1)).title("End"));
                 }
             }

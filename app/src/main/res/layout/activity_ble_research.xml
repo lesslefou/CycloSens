@@ -16,18 +16,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_back"
+        android:textSize="20dp"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/orange"
         android:text="@string/back"
-        android:background="@color/dark_grey"
-        android:textColor="@color/orange"
-        app:layout_constraintTop_toBottomOf="@id/recycleViewBle"
+        android:textColor="@color/black"
+        android:theme="@style/Theme.MaterialComponents"
+        app:cornerRadius="90dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.9"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/recycleViewBle"
+        app:layout_constraintVertical_bias="0.9"
+        app:strokeColor="@color/black"
+        app:strokeWidth="3dp" />/>
 
 
 

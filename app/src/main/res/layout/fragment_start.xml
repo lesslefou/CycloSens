@@ -73,6 +73,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
                     android:text="@string/distance"
+                    android:textColor="@color/black"
                     android:textSize="20sp" />
 
                 <TextView
@@ -86,6 +87,7 @@
 
                 <TextView
                     android:id="@+id/duration"
+                    android:textColor="@color/black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/distance"
@@ -132,6 +134,7 @@
 
             <TextView
                 android:id="@+id/nbActivities"
+                android:textColor="@color/black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -152,10 +155,11 @@
 
             <TextView
                 android:id="@+id/distanceTotal"
+                android:textColor="@color/black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
                 android:layout_below="@id/nbActivities"
+                android:layout_alignParentStart="true"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
                 android:text="@string/distanceTotal"
@@ -172,6 +176,7 @@
 
             <TextView
                 android:id="@+id/distanceAv"
+                android:textColor="@color/black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/distanceTotal"
@@ -192,6 +197,7 @@
 
             <TextView
                 android:id="@+id/bpmAv"
+                android:textColor="@color/black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/distanceAv"
@@ -212,6 +218,7 @@
 
             <TextView
                 android:id="@+id/strengthAv"
+                android:textColor="@color/black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/bpmAv"

@@ -24,13 +24,14 @@
         android:id="@+id/aboutUsText"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:textSize="19sp"
-        android:textAlignment="inherit"
         android:text="@string/aboutUsText"
-        app:layout_constraintTop_toBottomOf="@+id/aboutUs"
+        android:textAlignment="inherit"
+        android:textColor="@color/black"
+        android:textSize="19sp"
         app:layout_constraintBottom_toTopOf="@id/map"
+        app:layout_constraintEnd_toEndOf="@id/map"
         app:layout_constraintStart_toStartOf="@id/map"
-        app:layout_constraintEnd_toEndOf="@id/map"/>
+        app:layout_constraintTop_toBottomOf="@+id/aboutUs" />
 
     <fragment
         android:id="@+id/map"
@@ -43,16 +44,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/backBtn"
+        android:textSize="20dp"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/orange"
         android:text="@string/back"
-        android:textColor="@color/orange"
-        android:background="@color/dark_grey"
-        app:layout_constraintTop_toBottomOf="@id/map"
+        android:textColor="@color/black"
+        android:theme="@style/Theme.MaterialComponents"
+        app:cornerRadius="90dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/map"
+        app:strokeColor="@color/black"
+        app:strokeWidth="3dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

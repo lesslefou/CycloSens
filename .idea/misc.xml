@@ -3,6 +3,25 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/CycloSens/app/src/main/res/drawable/settings.xml" value="0.2145" />
+        <entry key="..\:/CycloSens/app/src/main/res/layout/activity_about_us.xml" value="0.2" />
+        <entry key="..\:/CycloSens/app/src/main/res/layout/activity_activities_adapter.xml" value="0.4" />
+        <entry key="..\:/CycloSens/app/src/main/res/layout/activity_ble_research.xml" value="0.264" />
+        <entry key="..\:/CycloSens/app/src/main/res/layout/activity_ble_research_adapter.xml" value="0.2" />
+        <entry key="..\:/CycloSens/app/src/main/res/layout/activity_devices.xml" value="0.2" />
+        <entry key="..\:/CycloSens/app/src/main/res/layout/activity_information.xml" value="0.2" />
+        <entry key="..\:/CycloSens/app/src/main/res/layout/activity_itineraries_adapter.xml" value="0.25416666666666665" />
+        <entry key="..\:/CycloSens/app/src/main/res/layout/activity_launcher.xml" value="0.2" />
+        <entry key="..\:/CycloSens/app/src/main/res/layout/activity_log_in.xml" value="0.264" />
+        <entry key="..\:/CycloSens/app/src/main/res/layout/activity_main.xml" value="0.2" />
+        <entry key="..\:/CycloSens/app/src/main/res/layout/activity_on_going.xml" value="0.25416666666666665" />
+        <entry key="..\:/CycloSens/app/src/main/res/layout/activity_reset_password.xml" value="0.264" />
+        <entry key="..\:/CycloSens/app/src/main/res/layout/activity_setting.xml" value="0.264" />
+        <entry key="..\:/CycloSens/app/src/main/res/layout/activity_sign_up.xml" value="0.264" />
+        <entry key="..\:/CycloSens/app/src/main/res/layout/activity_welcome.xml" value="0.2523452157598499" />
+        <entry key="..\:/CycloSens/app/src/main/res/layout/fragment_activities.xml" value="0.25416666666666665" />
+        <entry key="..\:/CycloSens/app/src/main/res/layout/fragment_itineraries.xml" value="0.25416666666666665" />
+        <entry key="..\:/CycloSens/app/src/main/res/layout/fragment_start.xml" value="0.264" />
         <entry key="..\:/Users/lisad/AndroidStudioProjects/CycloSens/app/src/main/res/drawable/rond.xml" value="0.2388888888888889" />
         <entry key="..\:/Users/lisad/AndroidStudioProjects/CycloSens/app/src/main/res/layout/activity_about_us.xml" value="0.24479166666666666" />
         <entry key="..\:/Users/lisad/AndroidStudioProjects/CycloSens/app/src/main/res/layout/activity_activities_adapter.xml" value="0.25" />

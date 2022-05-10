@@ -73,6 +73,7 @@ public class ItinerariesFragment extends Fragment {
         }
     }
 
+    //Create the itineraries
     private void creationBddItineraries(int speedUser, View v) {
         int distanceParcours = 0;
         int duration=0;
@@ -108,7 +109,7 @@ public class ItinerariesFragment extends Fragment {
         initRecycleView(v);
     }
 
-    //Initialise the recyclerView
+    //RecyclerView initializer
     private  void initRecycleView(View v){
         ProgressBar progressBar = v.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
@@ -119,6 +120,7 @@ public class ItinerariesFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
+    //Know the whole distance of an itinerary
     private int getDistanceFromItineraries(ArrayList<Position> positions) {
         int distanceParcours = 0;
         for (int i=1; i< positions.size(); i++) {
@@ -126,6 +128,7 @@ public class ItinerariesFragment extends Fragment {
         }
         return distanceParcours;
     }
+
 
     private float getDistanceBetweenTwoLocation(ArrayList<Position> positionList, int i) {
         Location locationA = new Location("point A");

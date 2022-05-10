@@ -59,10 +59,12 @@ public class BleResearch extends AppCompatActivity {
         monRecycler.setAdapter(bleResearchAdapter);
         monRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
+        //Ask for BLE permission
         if(bleResearchAdapter != null){
             Log.i(TAG, "bleResearchAdapter not null");
             askBluetoothPermission();
 
+            //Set the ble device to the database in order to connect later
             bleResearchAdapter.setOnItemClickListener(bluetoothDevice -> {
                 FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
                 if (firebaseUser != null) {
@@ -102,7 +104,7 @@ public class BleResearch extends AppCompatActivity {
         }
     };
 
-    //FAUT IL LE LAISSER ???
+    //List of devices
     private void list() {
         Set<BluetoothDevice> bleBonded = bluetoothAdapter.getBondedDevices();
 
@@ -133,7 +135,7 @@ public class BleResearch extends AppCompatActivity {
     }
 
     /**
-     * Demande acceptation permission bluetooth
+     * BLE acceptation
      */
     private void askBluetoothPermission() {
         BluetoothManager bluetoothManager = getSystemService(BluetoothManager.class);
@@ -161,7 +163,7 @@ public class BleResearch extends AppCompatActivity {
 
 
     /**
-     * Vérification permission localisation avant de lancer la recherche bluetooth
+     * Localisation permission
      */
     private void startLeScanBLEWithPermission() {
         if (ActivityCompat.checkSelfPermission(
@@ -174,7 +176,7 @@ public class BleResearch extends AppCompatActivity {
     }
 
     /**
-     * Lance la recherche bluetooth
+     * Start BLE research
      */
     private void startLEBle() {
         if (bluetoothAdapter.isEnabled()) {

@@ -30,6 +30,7 @@
 
         <TextView
             android:id="@+id/name"
+            android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -40,6 +41,7 @@
 
         <EditText
             android:id="@+id/edit_name"
+            android:textColor="@color/black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignTop="@id/name"
@@ -49,6 +51,7 @@
 
         <TextView
             android:id="@+id/surname"
+            android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/name"
@@ -60,6 +63,7 @@
 
         <EditText
             android:id="@+id/edit_surname"
+            android:textColor="@color/black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignTop="@id/surname"
@@ -70,17 +74,19 @@
 
         <TextView
             android:id="@+id/email"
+            android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/email"
-            android:textSize="30sp"
-            android:layout_alignParentStart="true"
             android:layout_below="@+id/surname"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
-            android:layout_marginStart="10dp"/>
+            android:text="@string/email"
+            android:textSize="30sp" />
 
         <EditText
             android:id="@+id/edit_email"
+            android:textColor="@color/black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignTop="@id/email"
@@ -90,17 +96,19 @@
 
         <TextView
             android:id="@+id/password"
+            android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/password"
-            android:textSize="30sp"
-            android:layout_alignParentStart="true"
             android:layout_below="@+id/email"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
-            android:layout_marginStart="10dp"/>
+            android:text="@string/password"
+            android:textSize="30sp" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
+            android:textColor="@color/black"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/password"
             android:layout_alignBottom="@id/password"
@@ -116,29 +124,43 @@
 
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/btn_sign"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/sign_up"
-        android:background="@color/black"
-        android:textColor="@color/orange"
-        app:layout_constraintTop_toBottomOf="@id/relative"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btn_back"
-        app:layout_constraintEnd_toEndOf="parent"/>
+    <com.google.android.material.button.MaterialButton
 
-    <Button
-        android:id="@+id/btn_back"
+        android:id="@+id/btn_sign"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/back"
-        android:background="@color/black"
-        android:textColor="@color/orange"
-        app:layout_constraintTop_toBottomOf="@id/relative"
+        android:backgroundTint="@color/orange"
+        android:textSize="20dp"
+        android:text="@string/sign_up"
+        android:textColor="@color/black"
+        android:theme="@style/Theme.MaterialComponents"
+        app:cornerRadius="90dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btn_back"
+        app:layout_constraintTop_toBottomOf="@id/relative"
+        app:strokeColor="@color/black"
+        app:strokeWidth="3dp" />
+
+    <com.google.android.material.button.MaterialButton
+
+        android:id="@+id/btn_back"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/orange"
+        android:textSize="20dp"
+        android:text="@string/back"
+        android:textColor="@color/black"
+        android:theme="@style/Theme.MaterialComponents"
+        app:cornerRadius="90dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_sign"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btn_sign"/>
+        app:layout_constraintTop_toBottomOf="@id/relative"
+        app:strokeColor="@color/black"
+        app:strokeWidth="3dp" />
 
     <ProgressBar
         android:id="@+id/progressBar"

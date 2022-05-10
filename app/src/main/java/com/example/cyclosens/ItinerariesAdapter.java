@@ -76,19 +76,19 @@ public class ItinerariesAdapter extends RecyclerView.Adapter<ItinerariesAdapter.
             for (int i = 0; i < locationDouble.size(); i++) {
                 location.add(new LatLng(locationDouble.get(i).getLat(), locationDouble.get(i).getLng()));
 
-                googleMap.addPolyline(line.add( //On rajoute a notre ligne
-                        location.get(i)). //L'element actuel de l'array list
+                googleMap.addPolyline(line.add( //Add to line
+                        location.get(i)). //Actual array list element
                         width(5) //specify the width of poly line
                         .color(Color.GREEN) //add color to our poly line.
                         .geodesic(true)); //make our poly line geodesic
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location.get(i), 15));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location.get(i), 14));
             }
 
-            //On rajoute un marqueur au début du track
+            //Add a marker at the beginning of the track
             googleMap.addMarker(new MarkerOptions().position(location.get(0)).title("Start"));
-            //On recupere la taille totale de l'array liste
+            //Catch the size of the locations array
             int size = location.size();
-            //On rajoute un marqueur à la fin du track
+            //Add a marker at the end of the track
             googleMap.addMarker(new MarkerOptions().position(location.get(size-1)).title("End"));
         }
 
@@ -108,6 +108,7 @@ public class ItinerariesAdapter extends RecyclerView.Adapter<ItinerariesAdapter.
 
     @SuppressLint("SetTextI18n")
     @Override
+    //Print the distance and duration of the activity
     public void onBindViewHolder(ItinerariesAdapter.ViewHolder holder, int position) {
         holder.itinerary = itineraries.get(position);
         Log.i(TAG, "onBindViewHolder " + holder.itinerary);

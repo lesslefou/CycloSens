@@ -37,6 +37,7 @@ public class Devices extends AppCompatActivity {
         binding.addCardiacDevice.setOnClickListener(v-> goSearchDevice("cardiac"));
         binding.addPedalDevice.setOnClickListener(v-> goSearchDevice("pedal"));
 
+        //Get the device from the database
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser != null) {
             String userId = firebaseUser.getUid();

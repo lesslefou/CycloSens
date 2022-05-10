@@ -82,22 +82,24 @@ public class ActivityInformation extends AppCompatActivity implements OnMapReady
         for (int i = 0; i < locationDouble.size(); i++) {
             location.add(new LatLng(locationDouble.get(i).getLat(), locationDouble.get(i).getLng()));
 
-            googleMap.addPolyline(line.add( //On rajoute a notre ligne
-                    location.get(i)). //L'element actuel de l'array list
+            googleMap.addPolyline(line.add( //Add to line
+                    location.get(i)). //Actual array list element
                             width(5) //specify the width of poly line
                     .color(Color.GREEN) //add color to our poly line.
                     .geodesic(true)); //make our poly line geodesic
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location.get(i), 14));
         }
 
-        //On rajoute un marqueur au début du track
+        //Add a marker at the beginning of the track
         googleMap.addMarker(new MarkerOptions().position(location.get(0)).title("Start"));
-        //On recupere la taille totale de l'array liste
+        //Catch the size of the locations array
         int size = location.size();
-        //On rajoute un marqueur à la fin du track
+        //Add a marker at the end of the track
         googleMap.addMarker(new MarkerOptions().position(location.get(size-1)).title("End"));
     }
 
+
+    //Delete the activity in case the user want to
     private void deleteActivity() {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser != null) {
@@ -121,6 +123,7 @@ public class ActivityInformation extends AppCompatActivity implements OnMapReady
     }
 
 
+    //Update the activity when one is delete
     private void updateActivitiesResume(String userId) {
         final int[] cpt = {0};
         final int[] totalDistance = {0};
@@ -144,6 +147,7 @@ public class ActivityInformation extends AppCompatActivity implements OnMapReady
                         avSpeed[0] = Integer.parseInt(Objects.requireNonNull(data.child("avSpeed").getValue()).toString());
                     }
 
+
                     int totalDistanceActivity = retrievedTotalDistance(activity.getPositionList());
                     Map<String, Object> activitiesResume = new HashMap<>();
                     activitiesResume.put("nbActivities",nbActivities[0] - 1);
@@ -162,6 +166,7 @@ public class ActivityInformation extends AppCompatActivity implements OnMapReady
         });
     }
 
+    //Change the value of the total distance
     private int retrievedTotalDistance(ArrayList<Position> positionList) {
         int totalDistance = 0;
         for (int i=1; i<positionList.size(); i++) {
@@ -171,6 +176,7 @@ public class ActivityInformation extends AppCompatActivity implements OnMapReady
         return totalDistance;
     }
 
+    //Measure the distance between two points
     private float getDistanceBetweenTwoLocation(int i) {
         Location locationA = new Location("point A");
         locationA.setLatitude(activity.getPositionList().get(i).getLat());
@@ -183,6 +189,7 @@ public class ActivityInformation extends AppCompatActivity implements OnMapReady
         return locationA.distanceTo(locationB);
     }
 
+    //Change the activity name
     private void updateNameActivity() {
         runOnUiThread(new Thread(() -> {
             EditText edittTxt = new EditText(ActivityInformation.this);
@@ -209,6 +216,7 @@ public class ActivityInformation extends AppCompatActivity implements OnMapReady
         }));
     }
 
+    //Change the datas in the data base
     private void databaseUpdate() {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser != null) {
@@ -229,6 +237,7 @@ public class ActivityInformation extends AppCompatActivity implements OnMapReady
         }
     }
 
+    //Change to the previous page
     @Override
     public void onBackPressed() {
         finish();

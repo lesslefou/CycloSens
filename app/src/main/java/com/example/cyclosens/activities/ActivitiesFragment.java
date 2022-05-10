@@ -89,7 +89,7 @@ public class ActivitiesFragment extends Fragment {
                         location.add(new Position(data2.child("lat").getValue(Double.class),data2.child("lng").getValue(Double.class)));
                     }
 
-                    /*//TRANSFORME UN OBJET EN JSON
+                    /*//Tranforlm object into Json
                     final GsonBuilder builder = new GsonBuilder();
                     final Gson gson = builder.create();
                     final String json = gson.toJson(location);
@@ -110,7 +110,7 @@ public class ActivitiesFragment extends Fragment {
 
     }
 
-    //Initialise the recyclerView
+    //Recycler view initializer
     private  void initRecycleView(View v){
         Log.d(TAG,"initRecycleView: init recyclerview");
         RecyclerView recyclerView = v.findViewById(R.id.activitiesRecycler);

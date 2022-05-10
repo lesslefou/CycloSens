@@ -45,6 +45,7 @@
 
     <TextView
         android:id="@+id/date"
+        android:textColor="@color/black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="TextView"
@@ -56,6 +57,7 @@
 
     <TextView
         android:id="@+id/duration"
+        android:textColor="@color/black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="TextView"
@@ -80,6 +82,7 @@
 
     <TextView
         android:id="@+id/totalDistance"
+        android:textColor="@color/black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="TextView"
@@ -92,6 +95,7 @@
     <TextView
         android:id="@+id/speedAv"
         android:layout_width="wrap_content"
+        android:textColor="@color/black"
         android:layout_height="wrap_content"
         tools:text="TextView"
         android:textSize="20sp"
@@ -102,6 +106,7 @@
 
     <TextView
         android:id="@+id/bpmAv"
+        android:textColor="@color/black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="TextView"
@@ -113,6 +118,7 @@
 
     <TextView
         android:id="@+id/strenghAv"
+        android:textColor="@color/black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="TextView"
@@ -122,15 +128,23 @@
         app:layout_constraintTop_toBottomOf="@id/bpmAv"
         app:layout_constraintBottom_toTopOf="@id/btnDelete"/>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
+
         android:id="@+id/btnDelete"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/orange"
         android:text="@string/delete_activity"
-        android:textSize="15sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:theme="@style/Theme.MaterialComponents"
+        app:cornerRadius="90dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/strenghAv" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/strenghAv"
+        app:strokeColor="@color/black"
+        app:strokeWidth="3dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
