@@ -113,7 +113,7 @@ public class ItinerariesAdapter extends RecyclerView.Adapter<ItinerariesAdapter.
         holder.itinerary = itineraries.get(position);
         Log.i(TAG, "onBindViewHolder " + holder.itinerary);
         holder.distanceActivity.setText(holder.itemView.getContext().getString(R.string.distance) + holder.itinerary.getDistance() + "m");
-        holder.durationActivity.setText(holder.itemView.getContext().getString(R.string.duration) + holder.itinerary.getDuration() + "s");
+        holder.durationActivity.setText(holder.itemView.getContext().getString(R.string.duration) + holder.itinerary.getDuration() + "m");
     }
 
     @Override

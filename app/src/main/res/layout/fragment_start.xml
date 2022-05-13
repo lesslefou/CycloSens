@@ -45,7 +45,8 @@
             android:layout_marginTop="20dp"
             android:layout_marginEnd="10dp"
             android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/lastTrackTitle">
+            app:layout_constraintTop_toBottomOf="@id/lastTrackTitle"
+            app:layout_constraintBottom_toTopOf="@id/resumeTitle">
 
             <fragment
                 android:id="@+id/map"
@@ -53,6 +54,7 @@
                 android:layout_width="200dp"
                 android:layout_height="200dp"
                 android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp" />
@@ -118,6 +120,7 @@
             android:textColor="@color/orange"
             android:textSize="30sp"
             android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/lastTrack"
             app:layout_constraintBottom_toTopOf="@id/resumeActivities"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

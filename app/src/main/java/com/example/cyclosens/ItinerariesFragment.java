@@ -86,7 +86,7 @@ public class ItinerariesFragment extends Fragment {
 
         distanceParcours = getDistanceFromItineraries(positions);
         if (speedUser == 0) { duration = 0; } else { duration = distanceParcours/speedUser;}
-        itineraries.add(new Itinerary(duration, distanceParcours, positions));
+        itineraries.add(new Itinerary(duration/60, distanceParcours, positions));
 
         ArrayList<Position> positions1 = new ArrayList<>();
         positions1.add(new Position(43.117030,5.932195));
@@ -95,7 +95,7 @@ public class ItinerariesFragment extends Fragment {
         positions1.add(new Position(43.119230,5.934155));
         distanceParcours= getDistanceFromItineraries(positions1);
         if (speedUser == 0) { duration = 0; } else { duration = distanceParcours/speedUser;}
-        itineraries.add(new Itinerary(duration, distanceParcours, positions1));
+        itineraries.add(new Itinerary(duration/60, distanceParcours, positions1));
 
         ArrayList<Position> positions2 = new ArrayList<>();
         positions2.add(new Position(43.117030,5.932195));
@@ -104,7 +104,7 @@ public class ItinerariesFragment extends Fragment {
         positions2.add(new Position(43.118030,5.935195));
         distanceParcours= getDistanceFromItineraries(positions2);
         if (speedUser == 0) { duration = 0; } else { duration = distanceParcours/speedUser;}
-        itineraries.add(new Itinerary(duration, distanceParcours, positions2));
+        itineraries.add(new Itinerary(duration/60, distanceParcours, positions2));
 
         initRecycleView(v);
     }

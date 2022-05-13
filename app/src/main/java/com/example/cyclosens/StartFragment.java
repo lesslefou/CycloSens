@@ -128,7 +128,7 @@ public class StartFragment extends Fragment {
         TextView durationLastTrackTV = v.findViewById(R.id.edit_duration);
 
         distanceLastTrackTV.setText("" + distanceLastTrack + "m");
-        durationLastTrackTV.setText("" + durationLastTrack + "s");
+        durationLastTrackTV.setText("" + durationLastTrack + "m");
 
         for (DataSnapshot data2 : data.child("positionList").getChildren()) {
             positionsLastTrack.add(new Position(data2.child("lat").getValue(Double.class),data2.child("lng").getValue(Double.class)));
@@ -172,7 +172,7 @@ public class StartFragment extends Fragment {
     }
 
     private void addBorderToRelativeLayout(View v) {
-        RelativeLayout layoutResume= v.findViewById(R.id.resumeActivities);
+        RelativeLayout layoutResume = v.findViewById(R.id.resumeActivities);
         RelativeLayout layoutLastTrack = v.findViewById(R.id.lastTrack);
         ShapeDrawable rectShapeDrawable = new ShapeDrawable(); //pre defined class
 
