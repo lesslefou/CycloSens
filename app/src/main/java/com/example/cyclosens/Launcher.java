@@ -40,7 +40,6 @@ public class Launcher extends AppCompatActivity {
     private boolean beltFound, pedalFound;
     private BluetoothAdapter bluetoothAdapter = null;
     private boolean locationPermissionGranted = false, blePermissionGranted = false;
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 2;
     private static final int REQUEST_CODE_ENABLE_BLUETOOTH = 1;
 
     @RequiresApi(api = Build.VERSION_CODES.S)
@@ -70,6 +69,8 @@ public class Launcher extends AppCompatActivity {
                     if (!hasPermission(PERMISSIONS)) {
                         ActivityCompat.requestPermissions(Launcher.this, PERMISSIONS, 1);
                     } else {
+                        locationPermissionGranted = true;
+                        blePermissionGranted = true;
                         askBluetoothPermission();
                         checkIfOnGoingPossible();
                     }
@@ -145,6 +146,7 @@ public class Launcher extends AppCompatActivity {
 
             });
         } else {
+            bluetoothAdapter.getBluetoothLeScanner().stopScan(mScanCallback);
             Toast.makeText(Launcher.this, R.string.pairingProblem, Toast.LENGTH_SHORT).show();
         }
     }
