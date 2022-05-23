@@ -56,7 +56,7 @@ public class ActivityInformation extends AppCompatActivity implements OnMapReady
 
         binding.name.setText(activity.getNameActivity());
         binding.date.setText(activity.getDateActivity());
-        binding.duration.setText("" + getString(R.string.duration) + " " + activity.getDuration() + "s");
+        binding.duration.setText("" + getString(R.string.duration) + " " + activity.getDuration() + "m");
         binding.bpmAv.setText("" + getString(R.string.bpmAv) + " " + activity.getBpmAv());
         binding.strenghAv.setText("" + getString(R.string.strengthAv) + " " + activity.getStrengthAv());
         binding.speedAv.setText("" + getString(R.string.speedAv) + " " + activity.getSpeedAv() + "m/s");

@@ -80,28 +80,28 @@ public class ItinerariesFragment extends Fragment {
         itineraries = new ArrayList<>();
 
         ArrayList<Position> positions = new ArrayList<>();
-        positions.add(new Position(43.117030,5.932195));
-        positions.add(new Position(43.118030,5.933195));
-        positions.add(new Position(43.119030,5.934195));
+        positions.add(new Position(43.115047,5.944390));
+        positions.add(new Position(43.112681,5.949723));
+        positions.add(new Position(43.114443,5.950406));
 
         distanceParcours = getDistanceFromItineraries(positions);
         if (speedUser == 0) { duration = 0; } else { duration = distanceParcours/speedUser;}
         itineraries.add(new Itinerary(duration/60, distanceParcours, positions));
 
         ArrayList<Position> positions1 = new ArrayList<>();
-        positions1.add(new Position(43.117030,5.932195));
-        positions1.add(new Position(43.118030,5.933195));
-        positions1.add(new Position(43.119030,5.934195));
-        positions1.add(new Position(43.119230,5.934155));
+        positions1.add(new Position(43.121386,5.938508));
+        positions1.add(new Position(43.121504,5.937977));
+        positions1.add(new Position(43.121747,5.936700));
+        positions1.add(new Position(43.122741,5.936770));
         distanceParcours= getDistanceFromItineraries(positions1);
         if (speedUser == 0) { duration = 0; } else { duration = distanceParcours/speedUser;}
         itineraries.add(new Itinerary(duration/60, distanceParcours, positions1));
 
         ArrayList<Position> positions2 = new ArrayList<>();
-        positions2.add(new Position(43.117030,5.932195));
-        positions2.add(new Position(43.118030,5.933195));
-        positions2.add(new Position(43.119030,5.934195));
-        positions2.add(new Position(43.118030,5.935195));
+        positions2.add(new Position(43.118963,5.934800));
+        positions2.add(new Position(43.121966,5.929008));
+        positions2.add(new Position(43.122954,5.929459));
+        positions2.add(new Position(43.122646,5.931870));
         distanceParcours= getDistanceFromItineraries(positions2);
         if (speedUser == 0) { duration = 0; } else { duration = distanceParcours/speedUser;}
         itineraries.add(new Itinerary(duration/60, distanceParcours, positions2));

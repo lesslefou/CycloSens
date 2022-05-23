@@ -42,9 +42,7 @@ public class Welcome extends AppCompatActivity {
             transaction.add(R.id.fragment_place, activitiesFragment);
         }
         transaction.commit();
-
     }
-
     /**
      * Display the fragment that the user had selected with the button
      */

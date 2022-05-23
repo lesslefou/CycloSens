@@ -95,6 +95,7 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
     private int cptStrength = 0;
 
 
+    @SuppressLint("MissingPermission")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,11 +112,6 @@ public class OnGoingActivity extends AppCompatActivity implements OnMapReadyCall
         }
 
         positionList = new ArrayList<>();
-
-        //A SUPPRIMER
-        positionList.add(new Position(43.117030, 5.932195));
-        positionList.add(new Position(43.118030, 5.933195));
-        positionList.add(new Position(43.119030, 5.934195));
 
         locationListener = this::updateLocation;
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
